@@ -1,7 +1,7 @@
 # Päev 2: Zabbixist jälgitavuseni
 
 **Kursus:** IT-monitooring ja jälgitavus Zabbixi abil
-**Kestus:** ~päev (loeng vahelduvad demo ja praktikumiga)
+**Kestus:** ~päev
 **Tase:** Edasijõudnud — eeldame eilset päeva ja Zabbixi igapäevast kasutust
 
 ---
