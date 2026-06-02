@@ -1,0 +1,2337 @@
+
+<!doctype html>
+<html lang="et" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Kahepäevane koolitus — jälgitavuse ja SRE mõtteviis Zabbixi näitel, ning selle teostamine täisstack'is">
+      
+      
+      
+        <link rel="canonical" href="https://hkhk-tk.github.io/zabbix-observability/paev2-loeng/">
+      
+      
+        <link rel="prev" href="../paev1-loeng/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Päev 2 — Zabbixist jälgitavuseni - IT-monitooring ja jälgitavus Zabbixi abil</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#paev-2-zabbixist-jalgitavuseni" class="md-skip">
+          Keri sisuni
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Päis">
+    <a href=".." title="IT-monitooring ja jälgitavus Zabbixi abil" class="md-header__button md-logo" aria-label="IT-monitooring ja jälgitavus Zabbixi abil" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            IT-monitooring ja jälgitavus Zabbixi abil
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Päev 2 — Zabbixist jälgitavuseni
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Tume teema"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Tume teema" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Hele teema"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Hele teema" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Otsi" placeholder="Otsi" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Otsing">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Lähtesta" aria-label="Lähtesta" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Otsingu lähtestamine
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Vaheleht" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Avaleht
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../kursuse-info/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Kursuse info
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../paev1-loeng/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Päev 1 — Mõtteviis Zabbixi näitel
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Päev 2 — Zabbixist jälgitavuseni
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigatsioon" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="IT-monitooring ja jälgitavus Zabbixi abil" class="md-nav__button md-logo" aria-label="IT-monitooring ja jälgitavus Zabbixi abil" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    IT-monitooring ja jälgitavus Zabbixi abil
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Avaleht
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kursuse-info/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kursuse info
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../paev1-loeng/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Päev 1 — Mõtteviis Zabbixi näitel
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Päev 2 — Zabbixist jälgitavuseni
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Päev 2 — Zabbixist jälgitavuseni
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Sisukord">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Sisukord
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#opivaljundid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🎯 Õpiväljundid
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-kus-me-eile-jaime" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Kus me eile jäime
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-moodikud-sugavuti" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Mõõdikud sügavuti
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Mõõdikud sügavuti">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#moodik-ja-sundmus-pole-sama-asi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mõõdik ja sündmus pole sama asi
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#item-key-vs-sildid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Item key vs sildid
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#push-vs-pull" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Push vs pull
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#percentiilid-keskmine-valetab" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Percentiilid — keskmine valetab
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#red-ja-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RED ja USE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exemplars-sild-moodikult-jaljele" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exemplars — sild mõõdikult jäljele
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zabbix-moodikuallikana" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Zabbix mõõdikuallikana
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-tracing-ja-apm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Tracing ja APM
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Tracing ja APM">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mis-on-apm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mis on APM
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kas-zabbix-on-apm-aus-vastus-ei" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kas Zabbix on APM? Aus vastus: ei
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jalg-ja-span" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Jälg ja span
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#konteksti-levitamine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Konteksti levitamine
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spani-osad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Span'i osad
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#samplimine-koike-ei-salvestata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sämplimine — kõike ei salvestata
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#red-moodikud-jalgedest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RED-mõõdikud jälgedest
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kriitiline-tee" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kriitiline tee
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#korrelatsioon-logid-trace_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Korrelatsioon: logid + trace_id
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kuhu-jaljed-lahevad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kuhu jäljed lähevad
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-opentelemetry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. OpenTelemetry
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. OpenTelemetry">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#otel-kui-liim" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OTel kui liim
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sdk-auto-vs-manuaalne" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SDK: auto vs manuaalne
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#collector" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Collector
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instrumenteerimise-jarjekord" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Instrumenteerimise järjekord
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uks-instrumenteerimine-mitu-sihti" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Üks instrumenteerimine, mitu sihti
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#otel-ja-zabbix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OTel ja Zabbix
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-arhitektuurid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Arhitektuurid
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Arhitektuurid">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#jalgitavuse-kihid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Jälgitavuse kihid
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kus-telemeetria-kogutakse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kus telemeetria kogutakse
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tsentraalne-vs-foderaalne" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tsentraalne vs föderaalne
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#salvestamine-andmetuubi-jargi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Salvestamine andmetüübi järgi
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kafka-kui-puhver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kafka kui puhver
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ha-ja-andmevoog" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HA ja andmevoog
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#full-stack-zabbix-lgtm-otel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full-stack: Zabbix + LGTM + OTel
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-integratsioon-ja-full-stack" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Integratsioon ja full-stack
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Integratsioon ja full-stack">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zabbix-grafana" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Zabbix + Grafana
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lgtm-stack" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LGTM stack
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prometheus-zabbix-molemas-suunas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prometheus ↔ Zabbix mõlemas suunas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#keskne-logimine-loki-vs-opensearch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Keskne logimine: Loki vs OpenSearch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zabbix-cloud" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Zabbix Cloud
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hubriidarhitektuur-ja-otsustusraamistik" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hübriidarhitektuur ja otsustusraamistik
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-turve" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Turve
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Turve">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#krupteerimine-psk-vs-tls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Krüpteerimine: PSK vs TLS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mtls-ja-sertifikaatide-haldus" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        mTLS ja sertifikaatide haldus
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#audit-log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Audit log
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#autentimine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Autentimine
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rbac-oigused-skaalal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RBAC — õigused skaalal
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#api-ja-secrets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API ja secrets
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-intsidendid-postmortem-ja-automatiseerimine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Intsidendid, postmortem ja automatiseerimine
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Intsidendid, postmortem ja automatiseerimine">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#intsident-algusest-lopuni" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Intsident algusest lõpuni
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#postmortem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Postmortem
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#observability-ansible-remediatsioon" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Observability → Ansible-remediatsioon
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mida-automatiseerida-mida-mitte" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mida automatiseerida, mida mitte
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-kokkuvote-zabbixist-jalgitavuseni" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Kokkuvõte — Zabbixist jälgitavuseni
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#allikad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Allikad
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Allikad">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ametlik-dokumentatsioon" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ametlik dokumentatsioon
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#teooria-ja-kontekst" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Teooria ja kontekst
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#praktiline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Praktiline
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Sisukord">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Sisukord
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#opivaljundid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🎯 Õpiväljundid
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-kus-me-eile-jaime" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Kus me eile jäime
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-moodikud-sugavuti" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Mõõdikud sügavuti
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Mõõdikud sügavuti">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#moodik-ja-sundmus-pole-sama-asi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mõõdik ja sündmus pole sama asi
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#item-key-vs-sildid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Item key vs sildid
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#push-vs-pull" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Push vs pull
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#percentiilid-keskmine-valetab" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Percentiilid — keskmine valetab
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#red-ja-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RED ja USE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exemplars-sild-moodikult-jaljele" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exemplars — sild mõõdikult jäljele
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zabbix-moodikuallikana" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Zabbix mõõdikuallikana
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-tracing-ja-apm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Tracing ja APM
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Tracing ja APM">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mis-on-apm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mis on APM
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kas-zabbix-on-apm-aus-vastus-ei" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kas Zabbix on APM? Aus vastus: ei
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jalg-ja-span" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Jälg ja span
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#konteksti-levitamine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Konteksti levitamine
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spani-osad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Span'i osad
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#samplimine-koike-ei-salvestata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sämplimine — kõike ei salvestata
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#red-moodikud-jalgedest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RED-mõõdikud jälgedest
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kriitiline-tee" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kriitiline tee
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#korrelatsioon-logid-trace_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Korrelatsioon: logid + trace_id
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kuhu-jaljed-lahevad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kuhu jäljed lähevad
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-opentelemetry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. OpenTelemetry
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. OpenTelemetry">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#otel-kui-liim" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OTel kui liim
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sdk-auto-vs-manuaalne" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SDK: auto vs manuaalne
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#collector" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Collector
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instrumenteerimise-jarjekord" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Instrumenteerimise järjekord
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uks-instrumenteerimine-mitu-sihti" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Üks instrumenteerimine, mitu sihti
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#otel-ja-zabbix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OTel ja Zabbix
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-arhitektuurid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Arhitektuurid
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Arhitektuurid">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#jalgitavuse-kihid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Jälgitavuse kihid
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kus-telemeetria-kogutakse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kus telemeetria kogutakse
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tsentraalne-vs-foderaalne" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tsentraalne vs föderaalne
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#salvestamine-andmetuubi-jargi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Salvestamine andmetüübi järgi
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kafka-kui-puhver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kafka kui puhver
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ha-ja-andmevoog" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HA ja andmevoog
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#full-stack-zabbix-lgtm-otel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full-stack: Zabbix + LGTM + OTel
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-integratsioon-ja-full-stack" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Integratsioon ja full-stack
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Integratsioon ja full-stack">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zabbix-grafana" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Zabbix + Grafana
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lgtm-stack" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LGTM stack
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prometheus-zabbix-molemas-suunas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prometheus ↔ Zabbix mõlemas suunas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#keskne-logimine-loki-vs-opensearch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Keskne logimine: Loki vs OpenSearch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zabbix-cloud" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Zabbix Cloud
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hubriidarhitektuur-ja-otsustusraamistik" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hübriidarhitektuur ja otsustusraamistik
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-turve" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Turve
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Turve">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#krupteerimine-psk-vs-tls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Krüpteerimine: PSK vs TLS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mtls-ja-sertifikaatide-haldus" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        mTLS ja sertifikaatide haldus
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#audit-log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Audit log
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#autentimine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Autentimine
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rbac-oigused-skaalal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RBAC — õigused skaalal
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#api-ja-secrets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API ja secrets
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-intsidendid-postmortem-ja-automatiseerimine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Intsidendid, postmortem ja automatiseerimine
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Intsidendid, postmortem ja automatiseerimine">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#intsident-algusest-lopuni" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Intsident algusest lõpuni
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#postmortem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Postmortem
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#observability-ansible-remediatsioon" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Observability → Ansible-remediatsioon
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mida-automatiseerida-mida-mitte" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mida automatiseerida, mida mitte
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-kokkuvote-zabbixist-jalgitavuseni" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Kokkuvõte — Zabbixist jälgitavuseni
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#allikad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Allikad
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Allikad">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ametlik-dokumentatsioon" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ametlik dokumentatsioon
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#teooria-ja-kontekst" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Teooria ja kontekst
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#praktiline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Praktiline
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="paev-2-zabbixist-jalgitavuseni">Päev 2: Zabbixist jälgitavuseni<a class="headerlink" href="#paev-2-zabbixist-jalgitavuseni" title="Permanent link">&para;</a></h1>
+<p><strong>Kursus:</strong> IT-monitooring ja jälgitavus Zabbixi abil
+<strong>Kestus:</strong> ~päev (loeng vahelduvad demo ja praktikumiga)
+<strong>Tase:</strong> Edasijõudnud — eeldame eilset päeva ja Zabbixi igapäevast kasutust</p>
+<hr />
+<h2 id="opivaljundid">🎯 Õpiväljundid<a class="headerlink" href="#opivaljundid" title="Permanent link">&para;</a></h2>
+<p>Pärast seda päeva oskad:</p>
+<ul>
+<li>Eristada mõõdikut ja sündmust ning selgitada, miks häiret ei panda mõõdikule, vaid tingimusele</li>
+<li>Põhjendada, miks percentiilid (p95/p99) on SLO jaoks paremad kui keskmine, ja eristada RED- ja USE-meetodit</li>
+<li>Kirjeldada, mis on jälg, span ja konteksti levitamine, ning selgitada, miks Zabbix ei ole APM</li>
+<li>Valida sämplimisstrateegia (head- vs tail-based) ja põhjendada selle kulu-mõju</li>
+<li>Selgitada OpenTelemetry rolli liimina ja kavandada instrumenteerimise järjekorda</li>
+<li>Kavandada jälgitavuse arhitektuuri kihtidena ning eristada tsentraalset ja föderaalset kogumist</li>
+<li>Valida turbemehhanismid (PSK/TLS, RBAC, secret-haldus) vastavalt keskkonna suurusele</li>
+<li>Kirjeldada intsidendi elukaart SLI-st postmortemini ja otsustada, mida automatiseerida</li>
+</ul>
+<hr />
+<h2 id="1-kus-me-eile-jaime">1. Kus me eile jäime<a class="headerlink" href="#1-kus-me-eile-jaime" title="Permanent link">&para;</a></h2>
+<p>Eile rääkisime mõttemudelist: seire versus jälgitavus, kolm sammast, teenusmõtlemine. Panime paika SLI, SLO ja veaeelarve, vaatasime SLA-d, häireväsimust ja toili. Zabbix joonistus välja tugeva mõõdikupõhjana — BSM, SLA, mallid, LLD.</p>
+<p>Täna läheme kapoti alla. Kõigepealt mõõdikud sügavamalt: percentiilid, RED/USE, anti-mustrid. Siis lisame puuduvad sambad: jäljed, logid, OpenTelemetry. Lõpuks paneme pildi kokku — Zabbix koos LGTM-i, OTel-i, turbe ja automatiseerimisega.</p>
+<p>Eile oli küsimus "kuidas mõelda". Täna on küsimus "kuidas ehitada".</p>
+<hr />
+<h2 id="2-moodikud-sugavuti">2. Mõõdikud sügavuti<a class="headerlink" href="#2-moodikud-sugavuti" title="Permanent link">&para;</a></h2>
+<h3 id="moodik-ja-sundmus-pole-sama-asi">Mõõdik ja sündmus pole sama asi<a class="headerlink" href="#moodik-ja-sundmus-pole-sama-asi" title="Permanent link">&para;</a></h3>
+<p>Zabbixi item on mõõdik — pidev mõõtmine ajas, sama mis Prometheuse või OpenTelemetry metric (time series koos siltidega). Mõõdik on dashboardide, SLI-de ja häirereeglite alus.</p>
+<p>Sündmus on midagi muud. Zabbixi event tekib triggeri olekumuutusest; Prometheuses tekib alert event siis, kui alerting rule aktiveerub. Sündmus on mõõdikust <strong>tuletatud</strong> seisundimuutus, mitte mõõdik ise.</p>
+<p>See vahe on praktiline: sa ei pane häiret mõõdikule otse, vaid tingimusele, ja sündmus tekib siis, kui see tingimus oleku muudab. Ahel on mõõdik (item) → trigger (reegel) → sündmus (event) → häire/intsident.</p>
+<h3 id="item-key-vs-sildid">Item key vs sildid<a class="headerlink" href="#item-key-vs-sildid" title="Permanent link">&para;</a></h3>
+<p>Siin lahkneb Zabbix ja Prometheuse/OTel maailm. Zabbixis on dimensioonid item key sees — <code>net.if.in[eth0]</code>, <code>net.if.in[eth1]</code> — ja iga uus dimensioon tähendab uut item key'd. Host on peamine objekt.</p>
+<p>Prometheuse ja OTel mudelis on dimensioonid siltides:</p>
+<div class="language-text highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>net_in_bytes{host=&quot;srv01&quot;, iface=&quot;eth0&quot;}
+</code></pre></div>
+<p>Sildid on paindlikud metaandmed, mille järgi on lihtne filtreerida ja agregeerida — <code>sum(net_in_bytes) by (host)</code>. Sama mõõdik, palju lõikeid, ilma uut item key'd loomata. See on hea teada, kui ehitad Zabbixi kõrvale Prometheuse-põhist kihti.</p>
+<h3 id="push-vs-pull">Push vs pull<a class="headerlink" href="#push-vs-pull" title="Permanent link">&para;</a></h3>
+<p>Kaks viisi telemeetriat koguda. <strong>Pull</strong>: seiresüsteem läheb ise andmed võtma — Prometheus scrape'ib <code>/metrics</code> endpoint'i, otsustab ise, millal koguda, ja teenuse-avastus on sisse ehitatud. <strong>Push</strong>: andmed saadetakse seiresüsteemi — Zabbixi aktiivne agent ja OTLP töötavad nii. Push sobib NAT-i ja tulemüüride taha ning lühiajaliste tööde (batch, serverless) jaoks.</p>
+<p>Zabbix oskab mõlemat. Eile nägime passiivset (pull) ja aktiivset (push) agenti — sama jaotus kehtib kogu telemeetriamaailmas.</p>
+<h3 id="percentiilid-keskmine-valetab">Percentiilid — keskmine valetab<a class="headerlink" href="#percentiilid-keskmine-valetab" title="Permanent link">&para;</a></h3>
+<p>SLO jaoks mõõda saba, mitte keskmist. Keskmine varjab probleeme: kui enamik päringuid on kiired ja väike osa väga aeglane, jääb keskmine ilus, aga osa kasutajaid kannatab. p95 ja p99 näitavad neid aeglasemaid päringuid.</p>
+<p>Tail latency määrab kasutajakogemuse. Wise'i makse-checkouti puhul ei loe, et "keskmine vastusaeg on 200 ms" — loeb, et iga sajas klient ootab kolm sekundit. p95/p99 annavad varajase hoiatuse süsteemi probleemidest, enne kui keskmine üldse liigub.</p>
+<h3 id="red-ja-use">RED ja USE<a class="headerlink" href="#red-ja-use" title="Permanent link">&para;</a></h3>
+<p>Kaks vaatenurka, mis täiendavad eile õpitud nelja kuldsignaali.</p>
+<p><strong>USE</strong> kirjeldab ressursse: Utilization (kui hõivatud), Saturation (kas piiri lähedal), Errors (kas esineb vigu), pluss kestus. See aitab leida <strong>põhjuse</strong> ressursi tasandil.</p>
+<p><strong>RED</strong> kirjeldab teenust kasutaja vaatest: Rate (kui palju päringuid), Errors (kui palju vigu), Duration (kui kaua võtavad). See näitab <strong>mõju</strong> teenuse tasandil.</p>
+<p>Mõlemat koos: kõrge CPU kasutus (USE) → pikk järjekord kettal (USE) → pikk vastusaeg (RED) → kasutajad kogevad viga (RED). USE leiab juurpõhjuse, RED näitab, mis kasutajani jõuab.</p>
+<h3 id="exemplars-sild-moodikult-jaljele">Exemplars — sild mõõdikult jäljele<a class="headerlink" href="#exemplars-sild-moodikult-jaljele" title="Permanent link">&para;</a></h3>
+<p>Mõõdik ütleb, et midagi on aeglane, aga ei ütle, miks. Exemplar lahendab selle: histogrammi punkt kannab kaasas konkreetse <code>trace_id</code>. Näed graafikul spike'i → klikid punktil → exemplar sisaldab trace ID-d → hüppad otse sellesse jälge → näed täpselt, mis päringut aeglustas. See on otsetee mõõdikute maailmast jälgede maailma, ja me tuleme selle juurde tracingu osas tagasi.</p>
+<h3 id="zabbix-moodikuallikana">Zabbix mõõdikuallikana<a class="headerlink" href="#zabbix-moodikuallikana" title="Permanent link">&para;</a></h3>
+<p>Küsimus pole "kas Zabbix või uus stack". Zabbixi mõõdikud lähevad Grafanasse datasource'ina või Prometheuse exporteri kaudu, ja siis on infra-mõõdikud samas vaates app-metrics'iga. Zabbix ei pea olema eraldi maailm — ta on üks mõõdikuallikas ühises vaates Prometheuse, OTel-i ja rakenduse mõõdikute kõrval.</p>
+<div class="admonition warning">
+<p class="admonition-title">Metrics anti-mustrid</p>
+<p><strong>Counter ilma <code>rate()</code> või <code>increase()</code>-ta</strong> näitab ainult kasvavat joont — mõttetu graafik. <strong>Latentsus ainult keskmisena</strong> peidab kasutajate halbu kogemusi. <strong>Kõrge kardinaalsusega sildid</strong> (<code>user_id</code>, <code>session_id</code>, IP) tapavad mõõdiku-andmebaasi salvestuskulu.</p>
+<p>Disaini tasandil: mõõdik ilma kasutajata ("kes seda vaatab?"), häire ilma tegevuseta ("mida ma nüüd teen?"), dashboard ilma küsimuseta ("millisele küsimusele see vastab?"). Iga mõõdik peaks vastama küsimusele. Kui küsimust pole, pole mõõdikut tõenäoliselt vaja.</p>
+</div>
+<hr />
+<h2 id="3-tracing-ja-apm">3. Tracing ja APM<a class="headerlink" href="#3-tracing-ja-apm" title="Permanent link">&para;</a></h2>
+<h3 id="mis-on-apm">Mis on APM<a class="headerlink" href="#mis-on-apm" title="Permanent link">&para;</a></h3>
+<p>Application Performance Monitoring näitab kogu päringu teekonda ja kasutajakogemust — miks kasutaja ootab. Neli tükki: jaotatud tracing (päringu tee läbi teenuste), transaction breakdown (kuhu aeg rakenduse sees kulub — kood, väliskutsed, SQL, cache), RUM (päris kasutaja brauserist — laadimisaeg, Core Web Vitals, JS-vead) ja service map (teenuste topoloogia, automaatselt jälgedest koostatud).</p>
+<h3 id="kas-zabbix-on-apm-aus-vastus-ei">Kas Zabbix on APM? Aus vastus: ei<a class="headerlink" href="#kas-zabbix-on-apm-aus-vastus-ei" title="Permanent link">&para;</a></h3>
+<p>Zabbixil <strong>on</strong> web scenarios (synthetic), browser item (7.0+), JMX/Java gateway, HTTP agent items. Zabbixil <strong>ei ole</strong> jaotatud tracingut, koodi-instrumenteerimist, transaktsiooni breakdowni, RUM-i ega automaatset topoloogiat. Zabbix katab infra ja synthetic-kontrolli. Päris APM on OTel pluss tracing-backend. See on aus piir, mitte puudus — Zabbix lihtsalt teeb teist tööd.</p>
+<h3 id="jalg-ja-span">Jälg ja span<a class="headerlink" href="#jalg-ja-span" title="Permanent link">&para;</a></h3>
+<p>Jälg on ühe päringu "elulugu" teenuste vahel — <code>O→O→O···→O</code>. Span on selle ajaosa: üks tükk ajatelg jälje sees. Mõõdik ütleb "checkout võttis 4 sekundit"; jälg näitab, kus need 4 sekundit kulusid — kas gateways, order-service'is, makses või andmebaasis.</p>
+<h3 id="konteksti-levitamine">Konteksti levitamine<a class="headerlink" href="#konteksti-levitamine" title="Permanent link">&para;</a></h3>
+<p>Kuidas eraldi teenuste span'id üheks jäljeks liimitakse? W3C <code>traceparent</code> standard: versioon, trace-id, span-id, flags. Iga teenusekõne kannab seda HTTP päises või metaandmetes. Ilma selleta jäävad span'id orvuks ega seo end üheks jäljeks. Kui teenus A kutsub teenust B, peab A oma trace-konteksti B-le edasi andma — muidu paistab B töö eraldi looga.</p>
+<h3 id="spani-osad">Span'i osad<a class="headerlink" href="#spani-osad" title="Permanent link">&para;</a></h3>
+<p>Span sisaldab atribuute (<code>http.method</code>, <code>db.statement</code>, <code>user.tier</code>), sündmusi (ajatemplitud märked, nt exception või retry) ja staatust (OK või Error). Oluline erinevus mõõdikust: span'is <strong>on</strong> kõrge kardinaalsus lubatud. <code>user_id</code> mõõdikusildis on lõks; span-atribuudis on ta täpselt see, mida tahad — sest jälge ei agregeerita time series'iks.</p>
+<h3 id="samplimine-koike-ei-salvestata">Sämplimine — kõike ei salvestata<a class="headerlink" href="#samplimine-koike-ei-salvestata" title="Permanent link">&para;</a></h3>
+<p>Jälgi on liiga palju, et kõiki hoida. Kaks lähenemist:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Head-based</th>
+<th>Tail-based</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Otsus</td>
+<td>trace'i alguses</td>
+<td>trace'i lõpus</td>
+</tr>
+<tr>
+<td>Kulu</td>
+<td>odav, kiire</td>
+<td>kallim, vajab rohkem ressurssi</td>
+</tr>
+<tr>
+<td>Näeb</td>
+<td>otsus enne tulemust</td>
+<td>terve trace enne otsust</td>
+</tr>
+<tr>
+<td>Risk</td>
+<td>võib probleemse trace'i vahele jätta</td>
+<td>näeb kõik vead ja aeglased</td>
+</tr>
+</tbody>
+</table>
+<p>Head-based küsib "kas salvestame selle?", tail-based küsib "kas see trace oli huvitav?". Tail-based hoiab täpselt need jäljed, mida vaja — vead ja aeglased — aga maksab rohkem, sest peab kõik span'id otsuse hetkeni puhvris hoidma.</p>
+<h3 id="red-moodikud-jalgedest">RED-mõõdikud jälgedest<a class="headerlink" href="#red-moodikud-jalgedest" title="Permanent link">&para;</a></h3>
+<p>Span-metrics tähendab, et tracingu andmetest genereeritakse automaatselt RED-mõõdikud (Rate, Errors, Duration). Ühest instrumenteerimisest saad nii jäljed kui mõõdikud: rakendus → span'id → OTel Collector → trace'id Temposse, RED-mõõdikud Prometheusesse/Grafanasse. Sa ei pea RED-i eraldi instrumenteerima, kui jäljed on juba olemas.</p>
+<h3 id="kriitiline-tee">Kriitiline tee<a class="headerlink" href="#kriitiline-tee" title="Permanent link">&para;</a></h3>
+<p>Kõige aeglasem span ei pruugi olla probleem. Oluline on span, mis määrab päringu <strong>kogukestuse</strong> — kriitiline tee. Mõni span võib olla aeglane, aga jooksta paralleelselt ega lükka koguaega edasi. Jälg aitab kriitilise tee leida. Optimeeri mõju, mitte värvi: paranda seda, mis päriselt kogukestust määrab, mitte iga punast tulpa.</p>
+<h3 id="korrelatsioon-logid-trace_id">Korrelatsioon: logid + trace_id<a class="headerlink" href="#korrelatsioon-logid-trace_id" title="Permanent link">&para;</a></h3>
+<p>Kui logirida kannab <code>trace_id</code>, seob ta logi konkreetse jäljega:</p>
+<div class="language-text highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>2026-06-03 14:22:01 ERROR checkout failed
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>  trace_id=4bf92f3577b34da6 user=tier_gold
+</code></pre></div>
+<p>Nüüd liiguvad kolm vaadet kokku. Mõõdik ütleb, et probleem on olemas (p99 hüppas). Jälg näitab, kus probleem tekkis (Order Service 1,85 s kriitilisel teel). Logi ütleb, mis täpselt juhtus (deadlock detected, stacktrace). Logist hüppad jälge, jäljest logisse, trace ID seob kõik kokku: <strong>metrics → trace → logs → root cause</strong>.</p>
+<h3 id="kuhu-jaljed-lahevad">Kuhu jäljed lähevad<a class="headerlink" href="#kuhu-jaljed-lahevad" title="Permanent link">&para;</a></h3>
+<p>Tracing-backend'id lahendavad sama ülesannet — salvestavad, indekseerivad ja analüüsivad jälgi. Klassikalised open-source: Zipkin (vanim, lihtne), Jaeger (CNCF, levinud), Tempo (Grafana, objektisalvestus, LGTM osa). APM-platvormid oma backendiga: Elastic APM, Datadog, New Relic, Dynatrace, AppDynamics. Cloud-native: AWS X-Ray, Google Cloud Trace, Azure Application Insights.</p>
+<hr />
+<h2 id="4-opentelemetry">4. OpenTelemetry<a class="headerlink" href="#4-opentelemetry" title="Permanent link">&para;</a></h2>
+<h3 id="otel-kui-liim">OTel kui liim<a class="headerlink" href="#otel-kui-liim" title="Permanent link">&para;</a></h3>
+<p>OpenTelemetry on ühtne viis telemeetriat koguda ja edastada. Allikad saadavad andmed OTel Collectorisse, mis sämplib, rikastab ja marsruudib need edasi — jäljed Temposse, logid Lokisse, mõõdikud Mimirisse. Üks formaat sisse, mitu sihtkohta välja.</p>
+<h3 id="sdk-auto-vs-manuaalne">SDK: auto vs manuaalne<a class="headerlink" href="#sdk-auto-vs-manuaalne" title="Permanent link">&para;</a></h3>
+<p><strong>Auto-instrumenteerimine</strong>: agent teeb töö sinu eest, HTTP, SQL ja gRPC leitakse automaatselt, kiire alustada. <strong>Manuaalne</strong>: lisad äriloogika ise — checkout, makse, tellimus — rohkem konteksti. Auto vastab küsimusele "mis süsteemis juhtus?", manuaalne "mida kasutaja tegi?". Praktikas alustad autoga ja lisad manuaalseid span'e seal, kus äriloogika on oluline.</p>
+<h3 id="collector">Collector<a class="headerlink" href="#collector" title="Permanent link">&para;</a></h3>
+<p>OTel Collector on üks vastuvõtupunkt: sämplimine ja rikastamine, andmete marsruutimine, mitu sihtkohta sama pipeline'iga. SDK-d, Kubernetes, compute ja API-d saadavad kõik OTLP-d collectorisse, sealt läheb edasi observability-platvormidele, salvestusele ja analüütikale.</p>
+<h3 id="instrumenteerimise-jarjekord">Instrumenteerimise järjekord<a class="headerlink" href="#instrumenteerimise-jarjekord" title="Permanent link">&para;</a></h3>
+<p>Kui hakkad OTel-i kasutusele võtma, siis sellises järjekorras: kõigepealt auto-instrumenteeri teenused (HTTP, SQL, gRPC, messaging), siis lisa <code>trace_id</code> logidesse (et logid ja jäljed kokku saaks), siis lisa käsitsi ärilised span'id (checkout, makse), ja sea sämplimine varakult, et kulud kontrolli all hoida. Sämplimist hiljem lisada on valus, sest seni oled kogunud rohkem, kui vaja.</p>
+<h3 id="uks-instrumenteerimine-mitu-sihti">Üks instrumenteerimine, mitu sihti<a class="headerlink" href="#uks-instrumenteerimine-mitu-sihti" title="Permanent link">&para;</a></h3>
+<p>Ilma OTel-ita on igal tööriistal oma agent, oma formaat, vendor lock-in, ja migratsioon tähendab koodimuudatusi. OTel-iga instrumenteerid üks kord, telemeetria formaat on standardne, backend on vaba valik, ja backendi vahetus ei nõua koodimuudatust. Instrumenteeri üks kord, vali backend hiljem.</p>
+<h3 id="otel-ja-zabbix">OTel ja Zabbix<a class="headerlink" href="#otel-ja-zabbix" title="Permanent link">&para;</a></h3>
+<p>Zabbix jääb infra- ja teenusemonitooringu kihiks. OTel katab tracingu, APM-i ja kõrge kardinaalsusega telemeetria. Zabbix näitab, et midagi on aeglane; OTel aitab leida, miks. Praktikas: Zabbix annab häire, seejärel vaatad Grafana dashboardi, kontrollid CPU-d ja mälu, vaatad andmebaasi mõõdikuid, otsid logidest vigu, võrdled kellaaegu ja vajadusel kaasad arendaja. OTel täiendab Zabbixit, ei asenda.</p>
+<div class="admonition note">
+<p class="admonition-title">OTel praktilised väljakutsed</p>
+<p>Collector on uus komponent, mida tuleb ise monitoorida. Sämplimine on teadlik kompromiss kulude ja nähtavuse vahel. Logide ökosüsteem areneb kiiresti. Auto-instrumenteerimine ei kata kogu äriloogikat. Ja instrumenteerimine vajab hooldust ning standardeid — see pole "pane peale ja unusta".</p>
+</div>
+<hr />
+<h2 id="5-arhitektuurid">5. Arhitektuurid<a class="headerlink" href="#5-arhitektuurid" title="Permanent link">&para;</a></h2>
+<h3 id="jalgitavuse-kihid">Jälgitavuse kihid<a class="headerlink" href="#jalgitavuse-kihid" title="Permanent link">&para;</a></h3>
+<p>Kogu pilt mahub kuude kihti, alt üles: <strong>süsteemid</strong> (serverid, võrk, Kubernetes, rakendused) → <strong>agendid ja kogumine</strong> (Zabbix Agent/SNMP, node_exporter, logishipper, OTel SDK) → <strong>pipeline</strong> (OTel Collector, vajadusel Kafka) → <strong>backend'id</strong> (mõõdikud Prometheus/Mimir/TimescaleDB, logid Loki/OpenSearch, jäljed Tempo/Jaeger) → <strong>visualiseerimine</strong> (Grafana, Zabbix UI, Kibana/OpenSearch Dashboards) → <strong>äri</strong> (SLA/SLO raportid, äridashboardid). Iga kiht teeb ühte tööd ja annab järgmisele edasi.</p>
+<h3 id="kus-telemeetria-kogutakse">Kus telemeetria kogutakse<a class="headerlink" href="#kus-telemeetria-kogutakse" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Muster</th>
+<th>Kus</th>
+<th>Milleks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Agent</td>
+<td>server/VM</td>
+<td>hosti mõõdikud</td>
+</tr>
+<tr>
+<td>Sidecar</td>
+<td>Kubernetes pod</td>
+<td>rakenduse lähedal kogumine</td>
+</tr>
+<tr>
+<td>Gateway</td>
+<td>keskne sissepääs</td>
+<td>agregeerimine, filtreerimine</td>
+</tr>
+<tr>
+<td>Collector</td>
+<td>pipeline</td>
+<td>töötlus ja edastamine</td>
+</tr>
+</tbody>
+</table>
+<p>Andmeid võib koguda mitmes kohas, aga OTel Collector on tavaliselt keskne kogumis- ja töötluspunkt.</p>
+<h3 id="tsentraalne-vs-foderaalne">Tsentraalne vs föderaalne<a class="headerlink" href="#tsentraalne-vs-foderaalne" title="Permanent link">&para;</a></h3>
+<p><strong>Tsentraalne</strong>: üks server kogub kõik — lihtne, aga pudelikael, sobib väikesele/keskmisele keskkonnale. <strong>Föderaalne</strong>: kohalikud kogujad pluss ülemine kiht — skaleerub, keerukam, sobib suurele ja mitme asukohaga keskkonnale. Zabbix proxy on föderaalse kogumise klassika: te teete seda juba, kui proxyd koguvad eemalt ja edastavad serverisse.</p>
+<h3 id="salvestamine-andmetuubi-jargi">Salvestamine andmetüübi järgi<a class="headerlink" href="#salvestamine-andmetuubi-jargi" title="Permanent link">&para;</a></h3>
+<p>Erinevad andmetüübid nõuavad erinevat salvestusstrateegiat. Mõõdikud lähevad time series -andmebaasi (Prometheus, Mimir, InfluxDB) — optimeeritud kiireks kirjutamiseks ja agregeerimiseks. Logid lähevad logiindeksisse (OpenSearch, Elastic) — täistekstotsing suurel mahul. Jäljed lähevad objektisalvestusse (Tempo, Loki taga S3/MinIO/Azure Blob/GCS) — odav suure mahu jaoks. Zabbixi enda ajaseeria läheb PostgreSQL + TimescaleDB hüpertabelitesse: automaatne ajapõhine partitsioneerimine, kompressioon kuni ~90%, chunk-retention vanade andmete kustutamiseks.</p>
+<h3 id="kafka-kui-puhver">Kafka kui puhver<a class="headerlink" href="#kafka-kui-puhver" title="Permanent link">&para;</a></h3>
+<p>Kafka neelab tippkoormuse, kui backend ei jõua. Producer'id (agendid, collectorid) ei pea teadma backendi elusolekut. Kui backend on lühiajaliselt maas, ei kao andmed — nad järjekordistatakse Kafkasse ja ootavad. See lahutab kogumise ja salvestamise üksteisest, nii et üks aeglane backend ei suru kogu pipeline'i kinni.</p>
+<h3 id="ha-ja-andmevoog">HA ja andmevoog<a class="headerlink" href="#ha-ja-andmevoog" title="Permanent link">&para;</a></h3>
+<p>Single point of failure on jälgitavuse vaenlane — eriti, sest jälgitavussüsteem peab töötama just siis, kui muu on katki. Zabbix serveril on HA (node-cluster, <code>ha_node</code>), proxydel HA (proxy-grupid, mitu teed), collector ja backend dubleeritud mitmes tsoonis. Andmevoog ei tohi sõltuda ühest sõlmest ega ühest ühendusest.</p>
+<h3 id="full-stack-zabbix-lgtm-otel">Full-stack: Zabbix + LGTM + OTel<a class="headerlink" href="#full-stack-zabbix-lgtm-otel" title="Permanent link">&para;</a></h3>
+<p>Mitte kas-kas, vaid kumb mille jaoks. Üks katus (Grafana) neljal sambal: Zabbix DB/Timescale (infra-mõõdikud, probleemid, triggerid), Mimir (mõõdikud skaalas), Loki (logid), Tempo (jäljed). All agendid ja kogujad: Zabbix Agent serveritele, node_exporter, OTel Collector rakendustele ja K8s-le.</p>
+<hr />
+<h2 id="6-integratsioon-ja-full-stack">6. Integratsioon ja full-stack<a class="headerlink" href="#6-integratsioon-ja-full-stack" title="Permanent link">&para;</a></h2>
+<h3 id="zabbix-grafana">Zabbix + Grafana<a class="headerlink" href="#zabbix-grafana" title="Permanent link">&para;</a></h3>
+<p>Grafana ühendab Zabbixi ja ülejäänud stacki üheks vaateks: Zabbixi mõõdikud ja probleemid, Prometheuse mõõdikud, Loki logid, Tempo jäljed — kõik samal dashboardil. See on koht, kus eile õpitud teenusvaade ja tänane telemeetria kokku saavad.</p>
+<h3 id="lgtm-stack">LGTM stack<a class="headerlink" href="#lgtm-stack" title="Permanent link">&para;</a></h3>
+<p>Grafana ökosüsteem kolmele sambale: <strong>L</strong>oki (logid), <strong>G</strong>rafana (visualiseerimine), <strong>T</strong>empo (jäljed), <strong>M</strong>imir (mõõdikud skaalas). Üks ökosüsteem, Grafana liidesena. Kui Zabbix on teil tugev infra-pool, siis LGTM lisab app-poole sama katuse alla.</p>
+<h3 id="prometheus-zabbix-molemas-suunas">Prometheus ↔ Zabbix mõlemas suunas<a class="headerlink" href="#prometheus-zabbix-molemas-suunas" title="Permanent link">&para;</a></h3>
+<p>Zabbix → Prometheus: Zabbixi andmed Grafanasse datasource'i või exporti kaudu, ühtne vaade. Prometheus → Zabbix: Zabbix scrapib ise <code>/metrics</code> endpoint'i (HTTP agent + preprocessing), ja app-metrics tulevad sisse Zabbixi itemitena. Paljud ei tea, et Zabbix oskab Prometheuse endpoint'i ise scrape'ida — see avab tee app-mõõdikuteni ilma eraldi Prometheuse-serverit püstitamata.</p>
+<h3 id="keskne-logimine-loki-vs-opensearch">Keskne logimine: Loki vs OpenSearch<a class="headerlink" href="#keskne-logimine-loki-vs-opensearch" title="Permanent link">&para;</a></h3>
+<p><strong>Loki</strong> indekseerib ainult silte — odav, väike maht, Grafana-native. <strong>OpenSearch/Elastic</strong> indekseerib kogu sisu — võimas otsing, suurem kulu, Kibana/OS Dashboards. Loki, kui maht peab olema odav; OpenSearch, kui vajad sügavat otsingut ja analüütikat. See on sama kompromiss, mille kohtad eile mainitud kardinaalsuse juures: mida rohkem indekseerid, seda kallim.</p>
+<h3 id="zabbix-cloud">Zabbix Cloud<a class="headerlink" href="#zabbix-cloud" title="Permanent link">&para;</a></h3>
+<p>Zabbixi-hallatav SaaS (AWS/Azure/GCP regioonid). Vähem taristuhaldust, kiire start, hea kui pole oma DB/HA hooldamise ressurssi. Ei sobi, kui on range andmeasukoht või sügav on-prem integratsioon.</p>
+<h3 id="hubriidarhitektuur-ja-otsustusraamistik">Hübriidarhitektuur ja otsustusraamistik<a class="headerlink" href="#hubriidarhitektuur-ja-otsustusraamistik" title="Permanent link">&para;</a></h3>
+<p>Reaalne keskkond on tavaliselt hübriid: on-prem (Zabbix Proxy + OTel Collector HA-grupis), cloud (OTel Collector AWS/Azure/GCP juures), ja Zabbix Cloud. Kõik voolab läbi Kafka puhvri dubleeritud backendidesse, Grafana koondab. Asukoht ei tohiks jälgitavust mõjutada.</p>
+<p>Küsimus pole "milline tööriist on parim", vaid milline kombinatsioon lahendab teie probleemi kõige lihtsamalt ja väiksema kuluga.</p>
+<hr />
+<h2 id="7-turve">7. Turve<a class="headerlink" href="#7-turve" title="Permanent link">&para;</a></h2>
+<h3 id="krupteerimine-psk-vs-tls">Krüpteerimine: PSK vs TLS<a class="headerlink" href="#krupteerimine-psk-vs-tls" title="Permanent link">&para;</a></h3>
+<p><strong>PSK</strong> (pre-shared key): jagatud salajane võti, lihtne, väike keskkond, identity ja key ühes. <strong>Sertifikaadipõhine TLS</strong>: CA-allkirjastatud sertifikaadid, skaleerub, tsentraalne usaldus; mTLS-iga on mõlemad pooled tõendatud. Zabbixis on agent ↔ server ↔ proxy kõik krüpteeritavad — väikeses keskkonnas PSK, kasvades sertifikaadid.</p>
+<h3 id="mtls-ja-sertifikaatide-haldus">mTLS ja sertifikaatide haldus<a class="headerlink" href="#mtls-ja-sertifikaatide-haldus" title="Permanent link">&para;</a></h3>
+<p>OTLP käib üle TLS, collector ↔ backend mTLS. Sertide elutsükkel — väljastamine, uuendamine, tühistamine — on omaette töö. Aegunud sert annab vaikse katkestuse, mis on jälgitavuse jaoks eriti ohtlik: süsteem, mis peaks sind hoiatama, lakkab vaikselt andmeid saamast, ja sa ei pruugi seda märgata enne, kui vajad andmeid kõige rohkem.</p>
+<h3 id="audit-log">Audit log<a class="headerlink" href="#audit-log" title="Permanent link">&para;</a></h3>
+<p>Zabbixi audit log salvestab konfiguratsiooni- ja autentimismuudatused. Küsimus "kes selle triggeri eile öösel keelas?" peab olema vastatav. See pole valikuline panga, NIS2, ISO ja siseauditi kontekstis.</p>
+<h3 id="autentimine">Autentimine<a class="headerlink" href="#autentimine" title="Permanent link">&para;</a></h3>
+<p>LDAP/AD ettevõtte kasutajatele, SAML/SSO ühe sisselogimise jaoks, MFA teise tegurina adminidele. Internal-autentimine jääb väikese keskkonna varuks või hädalahenduseks, mitte peamiseks viisiks.</p>
+<h3 id="rbac-oigused-skaalal">RBAC — õigused skaalal<a class="headerlink" href="#rbac-oigused-skaalal" title="Permanent link">&para;</a></h3>
+<p>Kolm tasandit. <strong>User roles</strong> (7.0+) määravad, mida tohib teha — lugemine, kirjutamine, seadistamine, administreerimine, ainult käivitamine — granulaarselt funktsioonidele ja objektidele. <strong>User groups</strong> seovad kasutajad rollide komplekti. <strong>Host groups</strong> määravad, millistele objektidele (ja alamgruppidele) õigus kehtib.</p>
+<p>Ahel: kasutaja kuulub gruppi → grupil on rollid → rollid annavad õigused → host group määrab ulatuse → õigused rakenduvad konkreetsetele hostidele ja mõõdikutele. Õige inimene, õiged õigused, õige ulatus. Suure halduskoormuse juures on see see, mis hoiab seitsekümmend administraatorit üksteise jalus astumast.</p>
+<h3 id="api-ja-secrets">API ja secrets<a class="headerlink" href="#api-ja-secrets" title="Permanent link">&para;</a></h3>
+<p>Kolm rolli, mida segi ei aeta. <strong>Secret macro</strong> on saladus, mida ei näidata — väärtus pole loetav, ei logita, ei paista UI-s; <code>{$DB_PASS}</code> võib viidata Vaultile. <strong>API token</strong> on see, mida automaatika tohib teha — scoped, piiratud õiguse ja elueaga. <strong>Vault</strong> on koht, kus saladusi hallatakse. Lühidalt: API token = mida tohib teha, secret macro = mida ei näidata, Vault = kus hoitakse.</p>
+<hr />
+<h2 id="8-intsidendid-postmortem-ja-automatiseerimine">8. Intsidendid, postmortem ja automatiseerimine<a class="headerlink" href="#8-intsidendid-postmortem-ja-automatiseerimine" title="Permanent link">&para;</a></h2>
+<h3 id="intsident-algusest-lopuni">Intsident algusest lõpuni<a class="headerlink" href="#intsident-algusest-lopuni" title="Permanent link">&para;</a></h3>
+<p>SRE vaatab intsidenti kindla ahelana. SLI rikub eesmärki (checkout p99 ületab sihttaset) → alert käivitub (SLO või alerting policy avab intsidendi) → mõju hinnatakse (kui palju kasutajaid, kui kiiresti veaeelarve kulub) → põhjus leitakse (jäljed, mõõdikud ja logid, mitte oletused) → teenus taastatakse (MTTR minimeeritakse) ja postmortemis õpitakse. <strong>SLI → Alert → Mõju → Juurpõhjus → Taastamine.</strong></p>
+<h3 id="postmortem">Postmortem<a class="headerlink" href="#postmortem" title="Permanent link">&para;</a></h3>
+<p>Timeline tuleb mõõdikutest — millal algas, millal taastati. Root cause tuleb jälgedest ja logidest, mitte oletustest. Parandused puudutavad alerting'ut, SLO-sid, automaatikat ja vajadusel koodi. Kultuur on blameless: eesmärk on õppimine, mitte süüdlase otsimine. Intsidendi eesmärk on teenus taastada; postmortemi eesmärk on vältida sama intsidenti tulevikus.</p>
+<h3 id="observability-ansible-remediatsioon">Observability → Ansible-remediatsioon<a class="headerlink" href="#observability-ansible-remediatsioon" title="Permanent link">&para;</a></h3>
+<p>Automaatika, mis reageerib andmetele. Alert/event (Zabbix, Prometheus, Loki) → event-driven reegel valib sobiva playbook'i → Git hoiab versioonitud playbook'e (<code>restart_service.yml</code>, <code>collect_diagnostics.yml</code>, <code>scale_out.yml</code>) → Ansible Controller/AWX käivitab → mõõdikud ja logid kontrollivad tulemust. Kui SLI taastus, suletakse intsident ja logitakse tulemus; kui ei taastunud, eskaleeritakse või käivitatakse teine playbook. Observability avastab probleemi, Git hoiab paranduse loogikat, Ansible käivitab tegevuse, mõõdikud kontrollivad tulemust.</p>
+<h3 id="mida-automatiseerida-mida-mitte">Mida automatiseerida, mida mitte<a class="headerlink" href="#mida-automatiseerida-mida-mitte" title="Permanent link">&para;</a></h3>
+<p>Tee automaatselt: korduvad madala riskiga remediatsioonid (restart, logi puhastus), standardiseeritud diagnostika (kogu logid, system info). Väldi täielikku automaatikat: kõrge riskiga operatsioonid, keerukad migratsioonid, olukorrad, kus äririski peab hindama inimene.</p>
+<p>Sama kehtib konfiguratsiooni kohta. Zabbixi konfiguratsioon Gitis (JSON/YAML) → Ansible deploy → Zabbix API → templates, host groups, triggers, users, dashboards. Tulemus: kõik muudatused on versioonitud, auditeeritavad ja korduvad. See on eile mainitud toili-kaotus, viidud konfiguratsiooni tasandile.</p>
+<hr />
+<h2 id="9-kokkuvote-zabbixist-jalgitavuseni">9. Kokkuvõte — Zabbixist jälgitavuseni<a class="headerlink" href="#9-kokkuvote-zabbixist-jalgitavuseni" title="Permanent link">&para;</a></h2>
+<p>Tee Zabbixist täisjälgitavuseni on viiest sammust:</p>
+<p><strong>1. Tugev Zabbix-baas.</strong> Templates, LLD, BSM, SLA — see on teil juba olemas ja jääb infra-kihi vundamendiks.</p>
+<p><strong>2. SLI/SLO pluss percentiilid mõõdikutele.</strong> Mõõda saba (p95/p99), mitte keskmist; mõõda kasutajakogemust, mitte ainult masinat.</p>
+<p><strong>3. Logid Zabbixi kõrvale.</strong> Loki odava mahu jaoks, OpenSearch sügava otsingu jaoks.</p>
+<p><strong>4. App-traces OTel-iga ja korrelatsioon.</strong> Üks instrumenteerimine, mitu backendi; <code>trace_id</code> seob mõõdikud, logid ja jäljed üheks intsidendiks.</p>
+<p><strong>5. Event-driven automatiseerimine ja SLO-juhtimine.</strong> Observability avastab, Git hoiab loogikat, Ansible käivitab, mõõdikud kontrollivad; postmortem õpib.</p>
+<p>Mõni täiendav punkt, mis kursusest kaasa võtta:</p>
+<p><strong>Zabbix ei ole APM.</strong> Ta katab infra ja synthetic; jaotatud tracing on OTel + tracing-backend.</p>
+<p><strong>Item key vs sildid.</strong> Zabbix paneb dimensioonid key'sse, Prometheus/OTel siltidesse — kardinaalsus on mõlemal piirang.</p>
+<p><strong>Kõrge kardinaalsus kuulub jälgedesse, mitte mõõdikutesse.</strong> Span-atribuudis on <code>user_id</code> õige; mõõdikusildis tapab ta andmebaasi.</p>
+<p><strong>Single point of failure on jälgitavuse vaenlane.</strong> HA igal kihil, sest jälgitavus peab töötama just siis, kui muu on katki.</p>
+<p><strong>Küsimus pole "parim tööriist", vaid "õige kombinatsioon".</strong> Kõige lihtsam ja väiksema kuluga lahendus teie probleemile.</p>
+<hr />
+<h2 id="allikad">Allikad<a class="headerlink" href="#allikad" title="Permanent link">&para;</a></h2>
+<h3 id="ametlik-dokumentatsioon">Ametlik dokumentatsioon<a class="headerlink" href="#ametlik-dokumentatsioon" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Allikas</th>
+<th>URL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Zabbix events</td>
+<td>https://www.zabbix.com/documentation/current/en/manual/config/events</td>
+</tr>
+<tr>
+<td>Zabbix item key</td>
+<td>https://www.zabbix.com/documentation/current/en/manual/config/items/item/key</td>
+</tr>
+<tr>
+<td>Zabbix encryption</td>
+<td>https://www.zabbix.com/documentation/current/en/manual/encryption</td>
+</tr>
+<tr>
+<td>Zabbix Cloud</td>
+<td>https://www.zabbix.com/cloud</td>
+</tr>
+<tr>
+<td>OpenTelemetry docs</td>
+<td>https://opentelemetry.io/docs/</td>
+</tr>
+<tr>
+<td>OpenTelemetry Collector</td>
+<td>https://opentelemetry.io/docs/collector/</td>
+</tr>
+<tr>
+<td>W3C Trace Context</td>
+<td>https://www.w3.org/TR/trace-context/</td>
+</tr>
+<tr>
+<td>Prometheus histograms</td>
+<td>https://prometheus.io/docs/practices/histograms/</td>
+</tr>
+</tbody>
+</table>
+<h3 id="teooria-ja-kontekst">Teooria ja kontekst<a class="headerlink" href="#teooria-ja-kontekst" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Allikas</th>
+<th>URL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Google SRE</td>
+<td>https://sre.google/</td>
+</tr>
+<tr>
+<td>TimescaleDB</td>
+<td>https://www.timescale.com/</td>
+</tr>
+</tbody>
+</table>
+<h3 id="praktiline">Praktiline<a class="headerlink" href="#praktiline" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Allikas</th>
+<th>URL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Grafana Tempo (jäljed)</td>
+<td>https://grafana.com/docs/tempo/latest/</td>
+</tr>
+<tr>
+<td>Grafana Loki (logid)</td>
+<td>https://grafana.com/docs/loki/latest/</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><em>Järgmine: praktikum — paneme kihid kokku oma keskkonnas.</em></p>
+
+
+
+
+
+
+
+  
+    
+  
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Viimane uuendus">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="2. juuni 2026 18:49:19 UTC">2. juuni 2026</span>
+  </span>
+
+    
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Üles
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.top", "navigation.sections", "navigation.indexes", "navigation.tracking", "toc.follow", "search.suggest", "search.highlight", "content.code.copy", "content.tabs.link"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Kopeeritud", "clipboard.copy": "Kopeeri l\u00f5ikelauale", "search.result.more.one": "1 veel sellel lehel", "search.result.more.other": "# veel sellel lehel", "search.result.none": "Otsingule ei leitud \u00fchtegi vastet", "search.result.one": "Leiti \u00fcks tulemus", "search.result.other": "Leiti # tulemust", "search.result.placeholder": "Otsimiseks kirjuta siia", "search.result.term.missing": "Puudub", "select.version": "Vali versioon"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@10.4.0/dist/mermaid.min.js"></script>
+      
+    
+  </body>
+</html>

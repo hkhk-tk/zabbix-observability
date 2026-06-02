@@ -1,0 +1,1388 @@
+
+<!doctype html>
+<html lang="et" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Kahepäevane koolitus — jälgitavuse ja SRE mõtteviis Zabbixi näitel, ning selle teostamine täisstack'is">
+      
+      
+      
+        <link rel="canonical" href="https://hkhk-tk.github.io/zabbix-observability/praktikum-zabbix-lld/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Praktikum 1: Zabbix LLD ja triggeripõhised teavitused - IT-monitooring ja jälgitavus Zabbixi abil</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#praktikum-1-zabbix-lld-ja-triggeripohised-teavitused" class="md-skip">
+          Keri sisuni
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Päis">
+    <a href=".." title="IT-monitooring ja jälgitavus Zabbixi abil" class="md-header__button md-logo" aria-label="IT-monitooring ja jälgitavus Zabbixi abil" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            IT-monitooring ja jälgitavus Zabbixi abil
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Praktikum 1: Zabbix LLD ja triggeripõhised teavitused
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Tume teema"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Tume teema" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Hele teema"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Hele teema" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Otsi" placeholder="Otsi" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Otsing">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Lähtesta" aria-label="Lähtesta" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Otsingu lähtestamine
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Vaheleht" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Avaleht
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../kursuse-info/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Kursuse info
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../paev1-loeng/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Päev 1 — Mõtteviis Zabbixi näitel
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../paev2-loeng/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Päev 2 — Zabbixist jälgitavuseni
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigatsioon" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="IT-monitooring ja jälgitavus Zabbixi abil" class="md-nav__button md-logo" aria-label="IT-monitooring ja jälgitavus Zabbixi abil" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    IT-monitooring ja jälgitavus Zabbixi abil
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Avaleht
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kursuse-info/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kursuse info
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../paev1-loeng/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Päev 1 — Mõtteviis Zabbixi näitel
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../paev2-loeng/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Päev 2 — Zabbixist jälgitavuseni
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Sisukord">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Sisukord
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#arhitektuur-ja-teenused" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Arhitektuur ja teenused
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#osa-1-zabbix-stack-dockeriga" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Osa 1: Zabbix stack Dockeriga
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Osa 1: Zabbix stack Dockeriga">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#samm-1-kaust-ja-compose-fail" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Samm 1: Kaust ja Compose-fail
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#samm-2-kaivita-ja-kontrolli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Samm 2: Käivita ja kontrolli
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#samm-3-login-ja-agent-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Samm 3: Login ja agent-host
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#osa-2-sunteetilised-moodikud" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Osa 2: Sünteetilised mõõdikud
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Osa 2: Sünteetilised mõõdikud">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#samm-1-discovery-ja-vaartuse-skript" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Samm 1: Discovery- ja väärtuse-skript
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#samm-2-userparameterid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Samm 2: UserParameter'id
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#osa-3-lld-discovery-ja-item-prototuup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Osa 3: LLD — discovery ja item-prototüüp
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Osa 3: LLD — discovery ja item-prototüüp">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#samm-1-discovery-rule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Samm 1: Discovery rule
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#samm-2-item-prototuup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Samm 2: Item-prototüüp
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#osa-4-trigger-prototuup-95" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Osa 4: Trigger-prototüüp (&gt;= 95)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Osa 4: Trigger-prototüüp (&gt;= 95)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#samm-1-prototuup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Samm 1: Prototüüp
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#samm-2-kaivita-trigger-spike-failiga" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Samm 2: Käivita trigger spike-failiga
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#osa-5-teavitused-chat-kanalisse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Osa 5: Teavitused chat-kanalisse
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Osa 5: Teavitused chat-kanalisse">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#samm-1-vali-kanal-ja-hangi-sihtpunkt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Samm 1: Vali kanal ja hangi sihtpunkt
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#samm-2-media-type" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Samm 2: Media type
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#samm-3-user-media" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Samm 3: User media
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#samm-4-action" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Samm 4: Action
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#samm-5-test-otsast-otsani" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Samm 5: Test otsast otsani
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#torkeotsing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tõrkeotsing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kokkuvote" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kokkuvõte
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#enesekontroll" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enesekontroll
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#iseseisva-too-pohjendus-esitamiseks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Iseseisva töö põhjendus (esitamiseks)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="praktikum-1-zabbix-lld-ja-triggeripohised-teavitused">Praktikum 1: Zabbix LLD ja triggeripõhised teavitused<a class="headerlink" href="#praktikum-1-zabbix-lld-ja-triggeripohised-teavitused" title="Permanent link">&para;</a></h1>
+<p>Selles praktikumis püstitad Zabbixi Docker Compose'iga, lood sünteetilised mõõdikud ja lased madala taseme avastusel (LLD) need automaatselt leida. Seejärel kirjutad ühe trigger-prototüübi, mis paljuneb iga avastatud mõõdiku peale, ja saadad teavituse oma tiimi chat-kanalisse.</p>
+<p>Praktikum kasutab <strong>Zabbix 7.0 LTS</strong> versiooni. See on sobiv valik õppetööks, sest 7.0 on pika toega haru ning kasutajaliides ja LLD-käitumine vastavad tänapäevasele Zabbixile. LLD näites kasutatakse JSON-i juurtasemel massiivi kujul; Zabbix toetab ka vana <code>{"data": [...]}</code> kuju, kuid uutes näidetes on juurtaseme massiiv eelistatud.</p>
+<div class="admonition abstract">
+<p class="admonition-title">Eesmärgid</p>
+<p>Selle praktikumi läbimise järel:</p>
+<ul>
+<li>Oskan püstitada Zabbix stacki (MySQL, server, web, agent) Docker Compose'iga</li>
+<li>Oskan kirjutada skripti, mis genereerib LLD-le valiidset JSON-i</li>
+<li>Oskan seadistada discovery reegli koos item- ja trigger-prototüüpidega</li>
+<li>Oskan kirjutada künnis-triggeri (<code>&gt;= 95</code>) prototüübina</li>
+<li>Oskan ühendada chat-kanali ja seadistada action'i, mis saadab probleemi- ja recovery-teavitusi</li>
+</ul>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Eeldused</p>
+<p>Enne seda praktikumi pead oskama Dockerit ja Docker Compose'i, Linuxi käsurida ning SSH-d. Vaja on üldist arusaama monitooringust: mis on host, item ja trigger.</p>
+</div>
+<div class="admonition info">
+<p class="admonition-title">Vaja läheb</p>
+<ul>
+<li>Ligipääs oma VM-ile SSH kaudu</li>
+<li>Ligipääs ühele chat-kanalile, kuhu saad luua webhooki või bot'i</li>
+<li>Soovitus: kasuta Discordi, sest see on selle praktikumi jaoks kõige lihtsam teavituste kanal</li>
+</ul>
+</div>
+<h2 id="arhitektuur-ja-teenused">Arhitektuur ja teenused<a class="headerlink" href="#arhitektuur-ja-teenused" title="Permanent link">&para;</a></h2>
+<p>Zabbix ei ole monoliit nagu Prometheus. See koosneb mitmest osast: MySQL hoiab konfiguratsiooni ja ajalugu, server töötleb andmeid ja arvutab triggereid, web on kasutajaliides, agent kogub mõõdikuid. Action saadab teavituse välja chat-kanalisse.</p>
+<figure>
+<pre class="mermaid"><code>%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#ede7f6','primaryBorderColor':'#5e35b1','primaryTextColor':'#212121','lineColor':'#7e57c2'}}}%%
+graph LR
+    BR[Brauser] --&gt; WEB[Zabbix Web]
+    WEB --&gt; DB[(MySQL)]
+    SRV[Zabbix Server] --&gt; DB
+    SRV --&gt;|zabbix_get| AG[Zabbix Agent]
+    SRV --&gt;|action| CH[Chat-kanal]</code></pre>
+<br />
+<figcaption>Joonis PN.1. Praktikumi Zabbix stack ja teavituste vool (Talvik, 2026).</figcaption>
+</figure>
+<table>
+<thead>
+<tr>
+<th>Teenus</th>
+<th>Image</th>
+<th>Port</th>
+<th>Roll</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MySQL</td>
+<td><code>mysql:8.0.39</code></td>
+<td>sisemine</td>
+<td>Konfiguratsioon ja ajalugu</td>
+</tr>
+<tr>
+<td>Zabbix Server</td>
+<td><code>zabbix/zabbix-server-mysql:ubuntu-7.0-latest</code></td>
+<td>10051</td>
+<td>Töötlemine, triggerid, action'id</td>
+</tr>
+<tr>
+<td>Zabbix Web</td>
+<td><code>zabbix/zabbix-web-nginx-mysql:ubuntu-7.0-latest</code></td>
+<td>8080</td>
+<td>Kasutajaliides</td>
+</tr>
+<tr>
+<td>Zabbix Agent</td>
+<td><code>zabbix/zabbix-agent:ubuntu-7.0-latest</code></td>
+<td>10050</td>
+<td>Mõõdikute kogumine</td>
+</tr>
+</tbody>
+</table>
+<p><em>Tabel PN.1. Praktikumi teenused ja pordid</em></p>
+<div class="admonition note">
+<p class="admonition-title">Versioonide valik</p>
+<p>MySQL on siin pin'itud konkreetsele versioonile <code>8.0.39</code>, et vältida ootamatuid muutusi. Zabbixi puhul kasutatakse <code>7.0-latest</code> LTS-haru sees, et saada sama LTS-põlvkonna turva- ja veaparandused.</p>
+</div>
+<h2 id="osa-1-zabbix-stack-dockeriga">Osa 1: Zabbix stack Dockeriga<a class="headerlink" href="#osa-1-zabbix-stack-dockeriga" title="Permanent link">&para;</a></h2>
+<h3 id="samm-1-kaust-ja-compose-fail">Samm 1: Kaust ja Compose-fail<a class="headerlink" href="#samm-1-kaust-ja-compose-fail" title="Permanent link">&para;</a></h3>
+<p><strong>Loo töökaust kahe alamkaustaga</strong> — <code>config</code> agendi UserParameter'ite jaoks ja <code>scripts</code> skripti jaoks:</p>
+<div class="language-bash highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>~/zabbix-lab/<span class="o">{</span>config,scripts<span class="o">}</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/zabbix-lab
+</code></pre></div>
+<p>Loo <code>docker-compose.yml</code>:</p>
+<div class="language-yaml highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">services</span><span class="p">:</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">mysql</span><span class="p">:</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mysql:8.0.39</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mysql</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">      </span><span class="nt">MYSQL_DATABASE</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zabbix</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">      </span><span class="nt">MYSQL_USER</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zabbix</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">      </span><span class="nt">MYSQL_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zabbix_pwd</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">      </span><span class="nt">MYSQL_ROOT_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">root_pwd</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">      </span><span class="nt">TZ</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Europe/Tallinn</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="nt">command</span><span class="p">:</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mysqld</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--character-set-server=utf8mb4</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--collation-server=utf8mb4_bin</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mysql-data:/var/lib/mysql</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">    </span><span class="nt">healthcheck</span><span class="p">:</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">      </span><span class="nt">test</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;CMD&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;mysqladmin&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;ping&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;-uroot&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;-proot_pwd&quot;</span><span class="p p-Indicator">]</span>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">      </span><span class="nt">interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10s</span>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">      </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5s</span>
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="w">      </span><span class="nt">retries</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w">      </span><span class="nt">start_period</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60s</span>
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unless-stopped</span>
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="w">  </span><span class="nt">zabbix-server</span><span class="p">:</span>
+<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zabbix/zabbix-server-mysql:ubuntu-7.0-latest</span>
+<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zabbix-server</span>
+<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span>
+<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="w">      </span><span class="nt">mysql</span><span class="p">:</span>
+<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="w">        </span><span class="nt">condition</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">service_healthy</span>
+<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="w">      </span><span class="nt">DB_SERVER_HOST</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mysql</span>
+<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="w">      </span><span class="nt">MYSQL_DATABASE</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zabbix</span>
+<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="w">      </span><span class="nt">MYSQL_USER</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zabbix</span>
+<a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a><span class="w">      </span><span class="nt">MYSQL_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zabbix_pwd</span>
+<a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="w">      </span><span class="nt">TZ</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Europe/Tallinn</span>
+<a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a><span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;10051:10051&quot;</span>
+<a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a><span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unless-stopped</span>
+<a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a>
+<a id="__codelineno-1-41" name="__codelineno-1-41" href="#__codelineno-1-41"></a><span class="w">  </span><span class="nt">zabbix-web</span><span class="p">:</span>
+<a id="__codelineno-1-42" name="__codelineno-1-42" href="#__codelineno-1-42"></a><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zabbix/zabbix-web-nginx-mysql:ubuntu-7.0-latest</span>
+<a id="__codelineno-1-43" name="__codelineno-1-43" href="#__codelineno-1-43"></a><span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zabbix-web</span>
+<a id="__codelineno-1-44" name="__codelineno-1-44" href="#__codelineno-1-44"></a><span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span>
+<a id="__codelineno-1-45" name="__codelineno-1-45" href="#__codelineno-1-45"></a><span class="w">      </span><span class="nt">mysql</span><span class="p">:</span>
+<a id="__codelineno-1-46" name="__codelineno-1-46" href="#__codelineno-1-46"></a><span class="w">        </span><span class="nt">condition</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">service_healthy</span>
+<a id="__codelineno-1-47" name="__codelineno-1-47" href="#__codelineno-1-47"></a><span class="w">      </span><span class="nt">zabbix-server</span><span class="p">:</span>
+<a id="__codelineno-1-48" name="__codelineno-1-48" href="#__codelineno-1-48"></a><span class="w">        </span><span class="nt">condition</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">service_started</span>
+<a id="__codelineno-1-49" name="__codelineno-1-49" href="#__codelineno-1-49"></a><span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<a id="__codelineno-1-50" name="__codelineno-1-50" href="#__codelineno-1-50"></a><span class="w">      </span><span class="nt">ZBX_SERVER_HOST</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zabbix-server</span>
+<a id="__codelineno-1-51" name="__codelineno-1-51" href="#__codelineno-1-51"></a><span class="w">      </span><span class="nt">DB_SERVER_HOST</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mysql</span>
+<a id="__codelineno-1-52" name="__codelineno-1-52" href="#__codelineno-1-52"></a><span class="w">      </span><span class="nt">MYSQL_DATABASE</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zabbix</span>
+<a id="__codelineno-1-53" name="__codelineno-1-53" href="#__codelineno-1-53"></a><span class="w">      </span><span class="nt">MYSQL_USER</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zabbix</span>
+<a id="__codelineno-1-54" name="__codelineno-1-54" href="#__codelineno-1-54"></a><span class="w">      </span><span class="nt">MYSQL_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zabbix_pwd</span>
+<a id="__codelineno-1-55" name="__codelineno-1-55" href="#__codelineno-1-55"></a><span class="w">      </span><span class="nt">PHP_TZ</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Europe/Tallinn</span>
+<a id="__codelineno-1-56" name="__codelineno-1-56" href="#__codelineno-1-56"></a><span class="w">      </span><span class="nt">TZ</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Europe/Tallinn</span>
+<a id="__codelineno-1-57" name="__codelineno-1-57" href="#__codelineno-1-57"></a><span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<a id="__codelineno-1-58" name="__codelineno-1-58" href="#__codelineno-1-58"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;8080:8080&quot;</span>
+<a id="__codelineno-1-59" name="__codelineno-1-59" href="#__codelineno-1-59"></a><span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unless-stopped</span>
+<a id="__codelineno-1-60" name="__codelineno-1-60" href="#__codelineno-1-60"></a>
+<a id="__codelineno-1-61" name="__codelineno-1-61" href="#__codelineno-1-61"></a><span class="w">  </span><span class="nt">zabbix-agent</span><span class="p">:</span>
+<a id="__codelineno-1-62" name="__codelineno-1-62" href="#__codelineno-1-62"></a><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zabbix/zabbix-agent:ubuntu-7.0-latest</span>
+<a id="__codelineno-1-63" name="__codelineno-1-63" href="#__codelineno-1-63"></a><span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zabbix-agent</span>
+<a id="__codelineno-1-64" name="__codelineno-1-64" href="#__codelineno-1-64"></a><span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<a id="__codelineno-1-65" name="__codelineno-1-65" href="#__codelineno-1-65"></a><span class="w">      </span><span class="nt">ZBX_SERVER_HOST</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zabbix-server</span>
+<a id="__codelineno-1-66" name="__codelineno-1-66" href="#__codelineno-1-66"></a><span class="w">      </span><span class="nt">ZBX_HOSTNAME</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zabbix-agent</span>
+<a id="__codelineno-1-67" name="__codelineno-1-67" href="#__codelineno-1-67"></a><span class="w">      </span><span class="nt">TZ</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Europe/Tallinn</span>
+<a id="__codelineno-1-68" name="__codelineno-1-68" href="#__codelineno-1-68"></a><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+<a id="__codelineno-1-69" name="__codelineno-1-69" href="#__codelineno-1-69"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./config:/etc/zabbix/zabbix_agentd.d:ro</span>
+<a id="__codelineno-1-70" name="__codelineno-1-70" href="#__codelineno-1-70"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./scripts:/opt/scripts:ro</span>
+<a id="__codelineno-1-71" name="__codelineno-1-71" href="#__codelineno-1-71"></a><span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unless-stopped</span>
+<a id="__codelineno-1-72" name="__codelineno-1-72" href="#__codelineno-1-72"></a>
+<a id="__codelineno-1-73" name="__codelineno-1-73" href="#__codelineno-1-73"></a><span class="nt">volumes</span><span class="p">:</span>
+<a id="__codelineno-1-74" name="__codelineno-1-74" href="#__codelineno-1-74"></a><span class="w">  </span><span class="nt">mysql-data</span><span class="p">:</span>
+</code></pre></div>
+<p>Konteinerid viitavad teineteisele DNS-nimega, mitte IP-aadressiga (<code>DB_SERVER_HOST: mysql</code>). <code>ZBX_HOSTNAME</code> peab Zabbixi UI-s host'i nimega täpselt ühtima. Agent mountib <code>config</code> ja <code>scripts</code> kaustad; neid kasutad Osas 2.</p>
+<h3 id="samm-2-kaivita-ja-kontrolli">Samm 2: Käivita ja kontrolli<a class="headerlink" href="#samm-2-kaivita-ja-kontrolli" title="Permanent link">&para;</a></h3>
+<p><strong>Käivita kogu stack ja vaata teenuste olekut:</strong></p>
+<div class="language-bash highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>docker<span class="w"> </span>compose<span class="w"> </span>ps
+</code></pre></div>
+<p>Oodatav tulemus: neli teenust on <code>Up</code>, MySQL on <code>(healthy)</code>. Esmakäivitus võib võtta umbes minuti, sest Zabbix server loob andmebaasi tabelid.</p>
+<div class="admonition warning">
+<p class="admonition-title">Levinud viga</p>
+<p>Kui <code>zabbix-web</code> või <code>zabbix-server</code> restartub, ei pruugi MySQL veel valmis olla. Vaata <code>docker compose logs mysql</code> ja oota. Kui probleem jääb püsima, kontrolli <code>free -h</code>; väikese VM-i puhul võib RAM olla piiriks.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Kui stack ei käivitu — diagnoosi ise</p>
+<p>Edasijõudnu ei tõsta kohe kätt, vaid loeb kõigepealt logi.</p>
+<ol>
+<li><strong>Logi</strong> — <code>docker compose ps</code> näitab, milline teenus on <code>Restarting</code> või <code>Exited</code>. <code>docker compose logs &lt;teenus&gt;</code> näitab tegelikku veateadet, <code>docker compose logs -f &lt;teenus&gt;</code> jälgib reaalajas.</li>
+<li><strong>Dokumentatsioon</strong> — otsi veateate võtmesõna Zabbixi manuaalist, image'i Docker Hub lehelt või Docker dokumentatsioonist.</li>
+<li><strong>AI</strong> — kleebi konkreetne logirida koos kontekstiga: milline image, milline käsk, milline fail.</li>
+</ol>
+<p>Logi annab fakti; dokumentatsioon ja AI aitavad seda tõlgendada. Alusta alati logist.</p>
+</div>
+<h3 id="samm-3-login-ja-agent-host">Samm 3: Login ja agent-host<a class="headerlink" href="#samm-3-login-ja-agent-host" title="Permanent link">&para;</a></h3>
+<p>Zabbix web töötab VM-il pordil 8080. Kui su brauser ei jookse VM-il endal, suuna port SSH kaudu oma masinasse:</p>
+<div class="language-bash highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>ssh<span class="w"> </span>-L<span class="w"> </span><span class="m">8080</span>:localhost:8080<span class="w"> </span>&lt;kasutaja&gt;@&lt;sinu-VM&gt;
+</code></pre></div>
+<p>Seejärel ava UI aadressilt:</p>
+<div class="language-text highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>http://localhost:8080
+</code></pre></div>
+<p><strong>Logi sisse ja vaheta parool:</strong></p>
+<ol>
+<li>Ava brauseris <code>http://localhost:8080</code></li>
+<li>Login: <code>Admin</code> / <code>zabbix</code></li>
+<li>Ikoon üleval paremas → <strong>Users → Admin → Change password</strong> → <code>Monitor2026!</code></li>
+</ol>
+<p><strong>Lisa agent host:</strong></p>
+<p><em>Data collection → Hosts → Create host</em>:</p>
+<ol>
+<li>Host name: <code>zabbix-agent</code></li>
+<li>Host groups: <code>Linux servers</code></li>
+<li>Interfaces → Add → <strong>Agent</strong> → DNS name <code>zabbix-agent</code>, Connect to <strong>DNS</strong>, port <code>10050</code></li>
+<li>Add</li>
+</ol>
+<p>Kontrolli, et server jõuab agendini:</p>
+<div class="language-bash highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>zabbix-server<span class="w"> </span>zabbix_get<span class="w"> </span>-s<span class="w"> </span>zabbix-agent<span class="w"> </span>-k<span class="w"> </span>agent.ping
+</code></pre></div>
+<p>Oodatav tulemus:</p>
+<div class="language-text highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>1
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Levinud viga</p>
+<p>Kui ZBX-indikaator jääb punaseks, peab Host name olema täpselt <code>zabbix-agent</code> ehk sama mis <code>ZBX_HOSTNAME</code>. Interface peab kasutama DNS-nime <code>zabbix-agent</code>, mitte juhuslikku IP-aadressi.</p>
+</div>
+<h2 id="osa-2-sunteetilised-moodikud">Osa 2: Sünteetilised mõõdikud<a class="headerlink" href="#osa-2-sunteetilised-moodikud" title="Permanent link">&para;</a></h2>
+<p>Päris LLD avastab asju, mille arvu sa ette ei tea: kettaid, võrguliideseid, konteinereid, andureid või teenuseid. Siin fakeerime mõõdikud, et isoleerida LLD, trigger ja teavitus reaalsete logide mürast. Kujuta kolme teenust (<code>metric1</code>, <code>metric2</code>, <code>metric3</code>), millest igaüks raporteerib väärtuse 0–100.</p>
+<h3 id="samm-1-discovery-ja-vaartuse-skript">Samm 1: Discovery- ja väärtuse-skript<a class="headerlink" href="#samm-1-discovery-ja-vaartuse-skript" title="Permanent link">&para;</a></h3>
+<p>Üks skript täidab kaks rolli: argumendiga <code>discovery</code> tagastab JSON-i, mida LLD ootab; muu argumendiga tagastab selle mõõdiku väärtuse.</p>
+<div class="language-bash highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>cat<span class="w"> </span>&gt;<span class="w"> </span>~/zabbix-lab/scripts/lab-metrics.sh<span class="w"> </span><span class="s">&lt;&lt;&#39;EOF&#39;</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="s">#!/bin/bash</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="s"># Sünteetilised mõõdikud LLD demo jaoks</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="s">case &quot;$1&quot; in</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="s">  discovery)</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="s">    echo &#39;[{&quot;{#METRIC}&quot;:&quot;metric1&quot;},{&quot;{#METRIC}&quot;:&quot;metric2&quot;},{&quot;{#METRIC}&quot;:&quot;metric3&quot;}]&#39;</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="s">    ;;</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="s">  *)</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="s">    if [ -f &quot;/tmp/lab-spike-$1&quot; ]; then</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="s">      echo 99</span>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="s">    else</span>
+<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="s">      echo $(( RANDOM % 101 ))</span>
+<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="s">    fi</span>
+<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="s">    ;;</span>
+<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="s">esac</span>
+<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="s">EOF</span>
+<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>chmod<span class="w"> </span>+x<span class="w"> </span>~/zabbix-lab/scripts/lab-metrics.sh
+</code></pre></div>
+<p>Spike-haru (<code>/tmp/lab-spike-&lt;metric&gt;</code>) lubab Osas 4 ühe mõõdiku väärtuse üle 95 sundida, et triggerit testida ilma juhust ootamata.</p>
+<p>Kontrolli, et fail on hosti poolel käivitatav:</p>
+<div class="language-bash highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>ls<span class="w"> </span>-l<span class="w"> </span>~/zabbix-lab/scripts/lab-metrics.sh
+</code></pre></div>
+<p>Faili õigustes peab olema <code>x</code>, näiteks <code>-rwxr-xr-x</code>.</p>
+<h3 id="samm-2-userparameterid">Samm 2: UserParameter'id<a class="headerlink" href="#samm-2-userparameterid" title="Permanent link">&para;</a></h3>
+<p><strong>Lisa agendile kaks võtit</strong> — üks avastuseks ja üks väärtuse jaoks:</p>
+<div class="language-bash highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>cat<span class="w"> </span>&gt;<span class="w"> </span>~/zabbix-lab/config/lab-metrics.conf<span class="w"> </span><span class="s">&lt;&lt;&#39;EOF&#39;</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="s">UserParameter=lab.discovery,/opt/scripts/lab-metrics.sh discovery</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="s">UserParameter=lab.metric[*],/opt/scripts/lab-metrics.sh $1</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="s">EOF</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>docker<span class="w"> </span>restart<span class="w"> </span>zabbix-agent
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>sleep<span class="w"> </span><span class="m">5</span>
+</code></pre></div>
+<p>Kontrolli ka konteineri seest, et skript on nähtav ja käivitatav:</p>
+<div class="language-bash highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>zabbix-agent<span class="w"> </span>ls<span class="w"> </span>-l<span class="w"> </span>/opt/scripts/lab-metrics.sh
+</code></pre></div>
+<p>Testi serverist mõlemat võtit:</p>
+<div class="language-bash highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>zabbix-server<span class="w"> </span>zabbix_get<span class="w"> </span>-s<span class="w"> </span>zabbix-agent<span class="w"> </span>-k<span class="w"> </span>lab.discovery
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>zabbix-server<span class="w"> </span>zabbix_get<span class="w"> </span>-s<span class="w"> </span>zabbix-agent<span class="w"> </span>-k<span class="w"> </span><span class="s2">&quot;lab.metric[metric1]&quot;</span>
+</code></pre></div>
+<p>Oodatav tulemus: esimene käsk tagastab JSON-massiivi, teine numbri 0–100.</p>
+<p>Näide korrektsest discovery-väljundist:</p>
+<div class="language-json highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="p">[{</span><span class="nt">&quot;{#METRIC}&quot;</span><span class="p">:</span><span class="s2">&quot;metric1&quot;</span><span class="p">},{</span><span class="nt">&quot;{#METRIC}&quot;</span><span class="p">:</span><span class="s2">&quot;metric2&quot;</span><span class="p">},{</span><span class="nt">&quot;{#METRIC}&quot;</span><span class="p">:</span><span class="s2">&quot;metric3&quot;</span><span class="p">}]</span>
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Miks mitte <code>data</code> wrapper?</p>
+<p>Vanades Zabbixi näidetes näed sageli kuju <code>{"data": [...]}</code>. Tänapäevases Zabbixis on eelistatud JSON-massiiv otse juurtasemel. Zabbix aktsepteerib vana kuju tagasiühilduvuse pärast, kuid uue labori jaoks on juurtaseme massiiv selgem.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Levinud viga</p>
+<p><code>ZBX_NOTSUPPORTED</code> tähendab tavaliselt, et skript ei ole täidetav või <code>UserParameter</code> süntaks on vigane. Kontrolli:</p>
+<div class="language-bash highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>zabbix-agent<span class="w"> </span>ls<span class="w"> </span>-l<span class="w"> </span>/opt/scripts/lab-metrics.sh
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>cat<span class="w"> </span>~/zabbix-lab/config/lab-metrics.conf
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>docker<span class="w"> </span>restart<span class="w"> </span>zabbix-agent
+</code></pre></div>
+</div>
+<h2 id="osa-3-lld-discovery-ja-item-prototuup">Osa 3: LLD — discovery ja item-prototüüp<a class="headerlink" href="#osa-3-lld-discovery-ja-item-prototuup" title="Permanent link">&para;</a></h2>
+<p>Discovery rule käivitab <code>lab.discovery</code> võtme, saab listi <code>{#METRIC}</code> väärtustest ja loob iga väärtuse jaoks item'i ühe prototüübi põhjal. Sina kirjutad ühe mustri, Zabbix teeb N item'it. Kui hiljem lisandub <code>metric4</code>, tekib uus item automaatselt.</p>
+<h3 id="samm-1-discovery-rule">Samm 1: Discovery rule<a class="headerlink" href="#samm-1-discovery-rule" title="Permanent link">&para;</a></h3>
+<p><em>Data collection → Hosts → <code>zabbix-agent</code> real </em><em>Discovery</em><em> → Create discovery rule</em>:</p>
+<ol>
+<li>Name: <code>Lab metrics discovery</code></li>
+<li>Type: <strong>Zabbix agent</strong></li>
+<li>Key: <code>lab.discovery</code></li>
+<li>Update interval: <code>1m</code></li>
+<li>Add</li>
+</ol>
+<div class="admonition warning">
+<p class="admonition-title">Levinud viga</p>
+<p>Kui discovery rule annab JSON-vea, testi väljund uuesti:</p>
+<div class="language-bash highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>zabbix-server<span class="w"> </span>zabbix_get<span class="w"> </span>-s<span class="w"> </span>zabbix-agent<span class="w"> </span>-k<span class="w"> </span>lab.discovery
+</code></pre></div>
+<p>Väljund peab olema korrektne JSON. Selle praktikumi puhul peab see olema juurtaseme massiiv, kus igas objektis on <code>{#METRIC}</code> makro.</p>
+</div>
+<h3 id="samm-2-item-prototuup">Samm 2: Item-prototüüp<a class="headerlink" href="#samm-2-item-prototuup" title="Permanent link">&para;</a></h3>
+<p><code>Lab metrics discovery</code> real <strong>Item prototypes → Create item prototype</strong>:</p>
+<ol>
+<li>Name: <code>Metric {#METRIC}</code></li>
+<li>Type: <strong>Zabbix agent</strong></li>
+<li>Key: <code>lab.metric[{#METRIC}]</code></li>
+<li>Type of information: <strong>Numeric (unsigned)</strong></li>
+<li>Update interval: <code>30s</code></li>
+<li>Add</li>
+</ol>
+<p>Oota umbes 1–2 minutit: discovery interval + esimene kogumine. Seejärel ava <em>Monitoring → Latest data</em>, vali host <code>zabbix-agent</code> ja kontrolli, et näed kolme item'it. Väärtus muutub iga 30 sekundi järel.</p>
+<div class="admonition tip">
+<p class="admonition-title">Kontrollpunkt enne triggerit</p>
+<p>Ära liigu trigger-prototüübi juurde enne, kui <code>Latest data</code> vaates on olemas:</p>
+<ul>
+<li><code>Metric metric1</code></li>
+<li><code>Metric metric2</code></li>
+<li><code>Metric metric3</code></li>
+</ul>
+<p>Kui item'eid pole, on probleem discovery rule'is või item-prototüübis, mitte triggeris.</p>
+</div>
+<h2 id="osa-4-trigger-prototuup-95">Osa 4: Trigger-prototüüp (<code>&gt;= 95</code>)<a class="headerlink" href="#osa-4-trigger-prototuup-95" title="Permanent link">&para;</a></h2>
+<p>Sama loogika kehtib triggeritele: üks prototüüp <code>{#METRIC}</code> makroga, Zabbix teeb iga avastatud mõõdiku peale eraldi triggeri.</p>
+<h3 id="samm-1-prototuup">Samm 1: Prototüüp<a class="headerlink" href="#samm-1-prototuup" title="Permanent link">&para;</a></h3>
+<p><code>Lab metrics discovery</code> real <strong>Trigger prototypes → Create trigger prototype</strong>:</p>
+<ol>
+<li>Name: <code>Metric {#METRIC} kriitiline (&gt;=95) {HOST.NAME}</code></li>
+<li>Severity: <strong>High</strong></li>
+<li>Expression:</li>
+</ol>
+<div class="language-text highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>last(/zabbix-agent/lab.metric[{#METRIC}])&gt;=95
+</code></pre></div>
+<p>Kontroll: <em>Data collection → Hosts → zabbix-agent → Triggers</em>. Seal peaksid nägema kolme triggerit, üks iga mõõdiku kohta.</p>
+<div class="admonition warning">
+<p class="admonition-title">Levinud viga</p>
+<p>Kui tuleb viga stiilis "must contain at least one item prototype", kasutab expression tõenäoliselt konkreetset item'it, näiteks <code>lab.metric[metric1]</code>. Trigger-prototüüp peab kasutama makrot <code>{#METRIC}</code>, sest prototüüp peab seostuma item-prototüübiga.</p>
+</div>
+<h3 id="samm-2-kaivita-trigger-spike-failiga">Samm 2: Käivita trigger spike-failiga<a class="headerlink" href="#samm-2-kaivita-trigger-spike-failiga" title="Permanent link">&para;</a></h3>
+<p>Väärtused on juhuslikud, nii et mõni ületab 95 varem või hiljem ise. Et mitte oodata, kasuta Osas 2 valmistatud spike-faili:</p>
+<div class="language-bash highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>zabbix-agent<span class="w"> </span>touch<span class="w"> </span>/tmp/lab-spike-metric1
+</code></pre></div>
+<p>Umbes 30–60 sekundi pärast ava <em>Monitoring → Problems</em>. Seal peaks ilmuma <code>Metric metric1 kriitiline (&gt;=95)</code> severityga <strong>High</strong>.</p>
+<p>Lahenda probleem:</p>
+<div class="language-bash highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>zabbix-agent<span class="w"> </span>rm<span class="w"> </span>/tmp/lab-spike-metric1
+</code></pre></div>
+<p>Järgmise kogumise järel langeb väärtus tõenäoliselt alla 95 ja trigger laheneb ise olekusse <strong>Resolved</strong>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Edasijõudnule: hüsterees</p>
+<p>Praegu läheb trigger probleemiks väärtusel <code>&gt;=95</code> ja taastub kohe, kui väärtus langeb alla 95. Kuna väärtus on juhuslik, võib see piiri ümber võbelda. Lisa trigger-prototüübile eraldi <strong>Recovery expression</strong>:</p>
+<ul>
+<li>Problem expression: <code>last(/zabbix-agent/lab.metric[{#METRIC}])&gt;=95</code></li>
+<li>Recovery expression: <code>last(/zabbix-agent/lab.metric[{#METRIC}])&lt;90</code></li>
+</ul>
+<p>Vahemik 90–95 tähendab: ära taasta veel, vaid oota stabiilsemat paranemist.</p>
+</div>
+<h2 id="osa-5-teavitused-chat-kanalisse">Osa 5: Teavitused chat-kanalisse<a class="headerlink" href="#osa-5-teavitused-chat-kanalisse" title="Permanent link">&para;</a></h2>
+<p>Problems-leht on kasulik ainult siis, kui keegi seda vaatab. Kell 03:00 ei vaata keegi. Seetõttu saadame teavituse sinna, kus tiim niikuinii töötab. Ahel koosneb kolmest osast: <strong>media type</strong> ehk kuidas saata, <strong>user media</strong> ehk kellele saata, ja <strong>action</strong> ehk millal saata.</p>
+<h3 id="samm-1-vali-kanal-ja-hangi-sihtpunkt">Samm 1: Vali kanal ja hangi sihtpunkt<a class="headerlink" href="#samm-1-vali-kanal-ja-hangi-sihtpunkt" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Kanal</th>
+<th>Zabbixi seadistus</th>
+<th>Soovitus praktikumi jaoks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Discord</td>
+<td>Sisseehitatud media type, parameetriks webhook URL</td>
+<td>Kõige lihtsam</td>
+</tr>
+<tr>
+<td>Slack</td>
+<td>Sisseehitatud media type, vajab bot-tokenit ja kanalit</td>
+<td>Sobib, aga nõuab rohkem seadistust</td>
+</tr>
+<tr>
+<td>MS Teams</td>
+<td>Kasuta Workflows-põhist webhooki; vanad Office 365 connectorid on pensionile viidud</td>
+<td>Kasuta ainult siis, kui koolitaja seda nõuab</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Hangi sihtpunkt vastavalt kanalile:</strong></p>
+<ul>
+<li><strong>Discord:</strong> kanali Settings → Integrations → Webhooks → New Webhook → Copy Webhook URL</li>
+<li><strong>Slack:</strong> loo Slack app → Bot Token (<code>xoxb-...</code>) õigusega <code>chat:write</code> → kutsu bot kanalisse</li>
+<li><strong>MS Teams:</strong> kanal → ⋯ → Workflows → <em>Post to a channel when a webhook request is received</em> → kopeeri URL<sup id="fnref:teams"><a class="footnote-ref" href="#fn:teams">1</a></sup></li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Praktikumi soovitus</p>
+<p>Kui sul pole põhjust kasutada Slacki või Teamsi, vali Discord. Nii jääb fookus Zabbixi LLD-le ja triggeritele, mitte chat-platvormi õigustele.</p>
+</div>
+<h3 id="samm-2-media-type">Samm 2: Media type<a class="headerlink" href="#samm-2-media-type" title="Permanent link">&para;</a></h3>
+<p><em>Alerts → Media types</em> → leia oma kanal (Discord / Slack / MS Teams) → ava → sisesta vajalik parameeter:</p>
+<ul>
+<li>Discord: webhook URL</li>
+<li>Slack: bot-token ja kanal</li>
+<li>Teams: Workflows webhook URL</li>
+</ul>
+<p>Veendu, et media type on <strong>Enabled</strong>.</p>
+<p>Testi kohe: media type rea lõpus <strong>Test</strong> → täida väljad → <strong>Test</strong>. Sõnum peab kanalisse jõudma.</p>
+<div class="admonition warning">
+<p class="admonition-title">Levinud viga</p>
+<p>Kui Test annab <code>Connection timeout</code>, ei jõua <code>zabbix-server</code> konteiner internetti või ei pääse ta selle teenuse aadressile ligi. See on võrgu- või tulemüüriprobleem, mitte LLD ega triggeri probleem.</p>
+</div>
+<h3 id="samm-3-user-media">Samm 3: User media<a class="headerlink" href="#samm-3-user-media" title="Permanent link">&para;</a></h3>
+<p><em>Users → Users → Admin → Media → Add</em>:</p>
+<ol>
+<li>Type: su kanal</li>
+<li>Send to: chat-kanal või sihtpunkt, mida media type nõuab</li>
+<li>Enabled</li>
+<li>Update, seejärel salvesta kasutaja</li>
+</ol>
+<h3 id="samm-4-action">Samm 4: Action<a class="headerlink" href="#samm-4-action" title="Permanent link">&para;</a></h3>
+<p><em>Alerts → Actions → Trigger actions → Create action</em>:</p>
+<ol>
+<li><strong>Action</strong> tab: Name <code>Lab metrics teavitused</code></li>
+<li>Conditions → Add → <em>Trigger severity</em> <code>&gt;=</code> <code>High</code></li>
+<li><strong>Operations</strong> tab: Add → <em>Send to users</em> <code>Admin</code> → <em>Send only to</em> <code>&lt;su kanal&gt;</code></li>
+<li><strong>Recovery operations</strong> tab: Add → sama kasutaja ja sama kanal</li>
+<li>Veendu, et action on <strong>Enabled</strong></li>
+<li>Add</li>
+</ol>
+<h3 id="samm-5-test-otsast-otsani">Samm 5: Test otsast otsani<a class="headerlink" href="#samm-5-test-otsast-otsani" title="Permanent link">&para;</a></h3>
+<p><strong>Sunni trigger uuesti ja jälgi kanalit:</strong></p>
+<div class="language-bash highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>zabbix-agent<span class="w"> </span>touch<span class="w"> </span>/tmp/lab-spike-metric1
+</code></pre></div>
+<p>Umbes minuti jooksul peaks kanalisse tulema probleemiteavitus.</p>
+<p>Lahenda probleem:</p>
+<div class="language-bash highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>zabbix-agent<span class="w"> </span>rm<span class="w"> </span>/tmp/lab-spike-metric1
+</code></pre></div>
+<p>Seejärel peaks tulema recovery-sõnum.</p>
+<div class="admonition warning">
+<p class="admonition-title">Levinud viga</p>
+<p>Kui trigger läks Firing, aga sõnumit ei tulnud, vaata <em>Reports → Action log</em>. Kõige sagedasem põhjus on <code>no media defined</code> ehk User media on puudu, või action'i tingimus ei sobinud sündmusega.</p>
+</div>
+<hr />
+<h2 id="torkeotsing">Tõrkeotsing<a class="headerlink" href="#torkeotsing" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Probleem</th>
+<th>Põhjus</th>
+<th>Lahendus</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>zabbix-web</code> restartub</td>
+<td>MySQL pole veel healthy või DB ei ole valmis</td>
+<td><code>docker compose logs mysql</code>, oota; kontrolli <code>free -h</code></td>
+</tr>
+<tr>
+<td>ZBX host punane</td>
+<td>Host name ei ühti <code>ZBX_HOSTNAME</code> väärtusega või interface on vale</td>
+<td>Host name = <code>zabbix-agent</code>, Connect to = <strong>DNS</strong></td>
+</tr>
+<tr>
+<td><code>ZBX_NOTSUPPORTED</code></td>
+<td>Skript ei täideta või <code>UserParameter</code> on vigane</td>
+<td><code>docker exec zabbix-agent ls -l /opt/scripts/lab-metrics.sh</code>, <code>cat config/lab-metrics.conf</code>, <code>docker restart zabbix-agent</code></td>
+</tr>
+<tr>
+<td>Discovery rule annab JSON-vea</td>
+<td>Discovery võti ei tagasta korrektset JSON-i</td>
+<td><code>docker exec zabbix-server zabbix_get -s zabbix-agent -k lab.discovery</code></td>
+</tr>
+<tr>
+<td>Item'eid ei teki</td>
+<td>Discovery interval pole veel möödunud või item-prototüüp on vale</td>
+<td>Oota 1m + kogumine; kontrolli <code>Latest data</code> vaadet</td>
+</tr>
+<tr>
+<td>Trigger-prototüübi viga</td>
+<td>Expression kasutab konkreetset nime</td>
+<td>Kasuta makrot <code>{#METRIC}</code></td>
+</tr>
+<tr>
+<td>Trigger ei lähe Firing</td>
+<td>Väärtus pole <code>&gt;=95</code></td>
+<td><code>docker exec zabbix-agent touch /tmp/lab-spike-metric1</code></td>
+</tr>
+<tr>
+<td>Trigger võbeleb Firing/Resolved vahel</td>
+<td>Puudub hüsterees</td>
+<td>Lisa recovery expression <code>&lt;90</code></td>
+</tr>
+<tr>
+<td>Media type Test timeout</td>
+<td>VM-il või konteineril pole egressi chat-teenuse suunas</td>
+<td>Võrgu või tulemüüri probleem — teavita koolitajat</td>
+</tr>
+<tr>
+<td>Trigger Firing, sõnumit ei tule</td>
+<td>User media puudu või action'i condition ei sobinud</td>
+<td>Vaata <em>Reports → Action log</em></td>
+</tr>
+</tbody>
+</table>
+<p><em>Tabel PN.2. Levinumad probleemid ja lahendused</em></p>
+<hr />
+<h2 id="kokkuvote">Kokkuvõte<a class="headerlink" href="#kokkuvote" title="Permanent link">&para;</a></h2>
+<p>Selles praktikumis sa:</p>
+<ul>
+<li>Püstitasid Zabbix stacki (MySQL, server, web, agent) Docker Compose'iga</li>
+<li>Kirjutasid skripti, mis genereerib LLD-le valiidset JSON-i ja sünteetilisi väärtusi</li>
+<li>Seadistasid discovery reegli, mille item-prototüüp lõi kolm item'it automaatselt</li>
+<li>Kirjutasid künnis-trigger-prototüübi (<code>&gt;=95</code>), mis paljunes iga avastatud mõõdiku peale</li>
+<li>Ühendasid chat-kanali ja seadistasid action'i, mis saatis probleemi- ja recovery-teavitused</li>
+</ul>
+<hr />
+<h2 id="enesekontroll">Enesekontroll<a class="headerlink" href="#enesekontroll" title="Permanent link">&para;</a></h2>
+<details class="question">
+<summary>1. Miks on LLD parem kui item'ite käsitsi loomine?</summary>
+<p>Kui avastatavate objektide arv on muutuv või ette teadmata, näiteks kettad, liidesed, konteinerid või teenused, kirjutad LLD-ga ühe prototüübi ja Zabbix loob kõik item'id ise. Uue objekti tekkimisel lisandub item automaatselt; käsitsi peaksid iga kord uue lisama.</p>
+</details>
+<details class="question">
+<summary>2. Mis on discovery rule, item-prototüübi ja trigger-prototüübi vahe?</summary>
+<p>Discovery rule käivitab võtme, mis tagastab listi <code>{#MAKRO}</code> väärtustest. Item-prototüüp on item'i muster <code>{#MAKRO}</code> makroga, mille põhjal luuakse iga avastatud väärtuse jaoks item. Trigger-prototüüp on triggeri muster, mille põhjal luuakse iga avastatud item'i jaoks trigger.</p>
+</details>
+<details class="question">
+<summary>3. Miks peab trigger-prototüübi expression kasutama <code>{#METRIC}</code> makrot?</summary>
+<p>Prototüüp peab viitama item-prototüübile, mitte ühele konkreetsele item'ile. Makro <code>{#METRIC}</code> seob triggeri avastatud item'iga; ilma selleta ei tea Zabbix, millise N item'i jaoks triggereid luua.</p>
+</details>
+<details class="question">
+<summary>4. Mis juhtub, kui spike-fail eemaldatakse?</summary>
+<p>Väärtuse-skript läheb tagasi juhusliku väärtuse režiimi. Järgmisel kogumisel langeb väärtus tõenäoliselt alla 95, trigger-tingimus ei kehti enam ja trigger laheneb olekusse <strong>Resolved</strong>. Kui recovery operation on seadistatud, saadetakse recovery-teavitus.</p>
+</details>
+<details class="question">
+<summary>5. Mis kolm osa peavad teavituste ahelas paigas olema?</summary>
+<p>Media type ehk kuidas saata, user media ehk kellele saata, ja action ehk millal saata. Kui üks neist puudub, sõnumit ei tule. Põhjuse näitab <em>Reports → Action log</em>.</p>
+</details>
+<h2 id="iseseisva-too-pohjendus-esitamiseks">Iseseisva töö põhjendus (esitamiseks)<a class="headerlink" href="#iseseisva-too-pohjendus-esitamiseks" title="Permanent link">&para;</a></h2>
+<p>Lisa praktikumi juurde lühike kirjalik põhjendus — paar lauset iga punkti kohta. See osa tõendab õpiväljundeid, mida pelk seadistamine ei näita.</p>
+<ol>
+<li><strong>Seire vs jälgitavus.</strong> Mida see seadistus seirab ja kus jääb pelgast seirest väheks — kus tuleksid appi mõõdikud, logid, jäljed? (ÕV1)</li>
+<li><strong>Teenusepõhine vaade.</strong> Kui see mõõdik oleks osa mingist teenusest, kuidas seostaksid selle SLI, SLO ja veaeelarvega? (ÕV2)</li>
+<li><strong>Teavitamise loogika.</strong> Põhjenda triggeri, hüstereesi ja action'i valikuid: miks need läved, miks recovery <code>&lt;90</code>, kuidas väldid valehäireid ja müra, näiteks sõltuvuste ja eskaleerimisega? (ÕV3)</li>
+<li><strong>Laiendus ja automatiseerimine.</strong> Kuidas saaks seda lahendust laiendada või automatiseerida OpenTelemetry, Zabbix API või Ansible abil? (ÕV5)</li>
+</ol>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:teams">
+<p>Microsoft soovitab Office 365 connectorite asemel kasutada Teamsis Workflows-põhiseid webhooke. Vanad connectorid on järk-järgult kasutusest eemaldatud, mistõttu on uute praktikumi juhiste jaoks Workflows kindlam valik.&#160;<a class="footnote-backref" href="#fnref:teams" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+
+
+
+
+
+
+
+  
+    
+  
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Viimane uuendus">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="2. juuni 2026 18:49:19 UTC">2. juuni 2026</span>
+  </span>
+
+    
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Üles
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.top", "navigation.sections", "navigation.indexes", "navigation.tracking", "toc.follow", "search.suggest", "search.highlight", "content.code.copy", "content.tabs.link"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Kopeeritud", "clipboard.copy": "Kopeeri l\u00f5ikelauale", "search.result.more.one": "1 veel sellel lehel", "search.result.more.other": "# veel sellel lehel", "search.result.none": "Otsingule ei leitud \u00fchtegi vastet", "search.result.one": "Leiti \u00fcks tulemus", "search.result.other": "Leiti # tulemust", "search.result.placeholder": "Otsimiseks kirjuta siia", "search.result.term.missing": "Puudub", "select.version": "Vali versioon"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@10.4.0/dist/mermaid.min.js"></script>
+      
+    
+  </body>
+</html>
