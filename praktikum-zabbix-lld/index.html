@@ -13,6 +13,8 @@
         <link rel="canonical" href="https://hkhk-tk.github.io/zabbix-observability/praktikum-zabbix-lld/">
       
       
+        <link rel="prev" href="../paev2-loeng/">
+      
       
       
         
@@ -23,7 +25,7 @@
     
     
       
-        <title>Praktikum 1: Zabbix LLD ja triggeripõhised teavitused - IT-monitooring ja jälgitavus Zabbixi abil</title>
+        <title>Praktikum - IT-monitooring ja jälgitavus Zabbixi abil</title>
       
     
     
@@ -108,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Praktikum 1: Zabbix LLD ja triggeripõhised teavitused
+              Praktikum
             
           </span>
         </div>
@@ -279,6 +281,27 @@
   
 
       
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Praktikum
+
+      </a>
+    </li>
+  
+
+      
     </ul>
   </div>
 </nav>
@@ -416,6 +439,374 @@
   
 
       </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Praktikum
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Praktikum
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Sisukord">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Sisukord
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#arhitektuur-ja-teenused" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Arhitektuur ja teenused
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#osa-1-zabbix-stack-dockeriga" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Osa 1: Zabbix stack Dockeriga
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Osa 1: Zabbix stack Dockeriga">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#samm-1-kaust-ja-compose-fail" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Samm 1: Kaust ja Compose-fail
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#samm-2-kaivita-ja-kontrolli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Samm 2: Käivita ja kontrolli
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#samm-3-login-ja-agent-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Samm 3: Login ja agent-host
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#osa-2-sunteetilised-moodikud" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Osa 2: Sünteetilised mõõdikud
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Osa 2: Sünteetilised mõõdikud">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#samm-1-discovery-ja-vaartuse-skript" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Samm 1: Discovery- ja väärtuse-skript
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#samm-2-userparameterid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Samm 2: UserParameter'id
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#osa-3-lld-discovery-ja-item-prototuup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Osa 3: LLD — discovery ja item-prototüüp
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Osa 3: LLD — discovery ja item-prototüüp">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#samm-1-discovery-rule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Samm 1: Discovery rule
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#samm-2-item-prototuup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Samm 2: Item-prototüüp
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#osa-4-trigger-prototuup-95" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Osa 4: Trigger-prototüüp (&gt;= 95)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Osa 4: Trigger-prototüüp (&gt;= 95)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#samm-1-prototuup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Samm 1: Prototüüp
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#samm-2-kaivita-trigger-spike-failiga" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Samm 2: Käivita trigger spike-failiga
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#osa-5-teavitused-chat-kanalisse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Osa 5: Teavitused chat-kanalisse
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Osa 5: Teavitused chat-kanalisse">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#samm-1-vali-kanal-ja-hangi-sihtpunkt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Samm 1: Vali kanal ja hangi sihtpunkt
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#samm-2-media-type" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Samm 2: Media type
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#samm-3-user-media" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Samm 3: User media
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#samm-4-action" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Samm 4: Action
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#samm-5-test-otsast-otsani" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Samm 5: Test otsast otsani
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#torkeotsing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tõrkeotsing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kokkuvote" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kokkuvõte
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#enesekontroll" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enesekontroll
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#iseseisva-too-pohjendus-esitamiseks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Iseseisva töö põhjendus (esitamiseks)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
