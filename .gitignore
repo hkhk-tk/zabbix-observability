@@ -1,0 +1,5 @@
+*.pdf
+*.pptx
+zabbix-*.md
+*-TAIS.md
+docs/*pt.md

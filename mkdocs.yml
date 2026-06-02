@@ -1,0 +1,75 @@
+site_name: IT-monitooring ja jälgitavus Zabbixi abil
+site_description: Kahepäevane koolitus — jälgitavuse ja SRE mõtteviis Zabbixi näitel, ning selle teostamine täisstack'is
+site_url: https://hkhk-tk.github.io/zabbix-observability/
+
+theme:
+      name: material
+      language: et
+      palette:
+          - scheme: default
+            primary: indigo
+            accent: indigo
+            toggle:
+                  icon: material/weather-night
+                  name: Tume teema
+          - scheme: slate
+            primary: indigo
+            accent: indigo
+            toggle:
+                  icon: material/weather-sunny
+                  name: Hele teema
+      font:
+            text: Inter
+            code: JetBrains Mono
+      features:
+          - navigation.tabs
+          - navigation.top
+          - navigation.sections
+          - navigation.indexes
+          - navigation.tracking
+          - toc.follow
+          - search.suggest
+          - search.highlight
+          - content.code.copy
+          - content.tabs.link
+
+markdown_extensions:
+    - toc:
+            permalink: true
+    - attr_list
+    - md_in_html
+    - admonition
+    - footnotes
+    - tables
+    - pymdownx.highlight:
+            anchor_linenums: true
+            pygments_lang_class: true
+    - pymdownx.inlinehilite
+    - pymdownx.superfences:
+            custom_fences:
+                - name: mermaid
+                  class: mermaid
+                  format: !!python/name:pymdownx.superfences.fence_code_format ""
+    - pymdownx.details
+    - pymdownx.tabbed:
+            alternate_style: true
+    - pymdownx.keys
+    - pymdownx.emoji:
+            emoji_index: !!python/name:material.extensions.emoji.twemoji ""
+            emoji_generator:
+
+                  !!python/name:material.extensions.emoji.to_svg ""
+plugins:
+    - search:
+            lang: et
+    - git-revision-date-localized:
+            fallback_to_build_date: true
+
+extra_javascript:
+    - https://unpkg.com/mermaid@10.4.0/dist/mermaid.min.js
+
+nav:
+    - Avaleht: index.md
+    - Kursuse info: kursuse-info.md
+    - Päev 1 — Mõtteviis Zabbixi näitel: paev1-loeng.md
+    - Päev 2 — Zabbixist jälgitavuseni: paev2-loeng.md
